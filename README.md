@@ -35,7 +35,7 @@ ToDo's
 * ~~ToDo: Setup flag database~~
 * ~~ToDo: Setup user database for login/tracking of points (current version only tracks name/points/flags~~
 * ~~ToDo: Change prints to logging - Include setup.log~~
-* ToDo: Check for crypto package installation, make recommendations
+* ~~ToDo: Check for crypto package installation, make recommendations~~
 
 ### All
 * ToDo: Clean/Optimize script
