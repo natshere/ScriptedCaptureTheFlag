@@ -32,9 +32,9 @@ ToDo's
 * ToDo: Add option to create just UUID
 
 ### Setup.py
-* ToDo: Setup flag database
-* ToDo: Setup user database for login/tracking of points (current version only tracks name/points/flags
-* ToDo: Change prints to logging - Include setup.log
+~~* ToDo: Setup flag database~~
+~~* ToDo: Setup user database for login/tracking of points (current version only tracks name/points/flags~~
+~~* ToDo: Change prints to logging - Include setup.log~~
 * ToDo: Check for crypto package installation, make recommendations
 
 ### All
