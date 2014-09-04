@@ -24,6 +24,7 @@ ToDo's
 * ToDo: Interact with user_messages table - update with new messages by users
 * ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points
 * ToDo: Create logic for user to submit flag only once
+
 ### createFlag.py
 * ToDo: Give option for venomous flag
 * ToDo: Update flag database when creating flag/UUID
