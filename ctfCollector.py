@@ -8,8 +8,10 @@ import argparse
 import sqlite3
 import os
 
-#ToDo: UUID/Flag scoring database
-#ToDo: Logic to update scoring in user database
+#ToDo: Interact with user_points table - Logic to update scoring in user database
+#ToDo: Interact with user_flags table - Update flags as user sends them
+#ToDo: Interact with user_messages table - update with new messages by users
+#ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points
 #ToDo: Create logic for user to submit flag only once
 
 parser = argparse.ArgumentParser(description='Server listening for flags')
