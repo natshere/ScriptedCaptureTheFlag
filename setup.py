@@ -4,9 +4,6 @@ import sqlite3
 import os
 import argparse
 
-#ToDo: Setup flag database
-#ToDo: Setup user database for login/tracking of points (current version only tracks name/points/flags
-#ToDo: Change prints to logging - Include setup.log
 #ToDo: Check for crypto package installation, make recommendations
 
 parser = argparse.ArgumentParser(description='Server listening for flags')
