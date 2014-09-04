@@ -3,6 +3,7 @@
 import sqlite3
 import os
 import argparse
+import logging
 
 parser = argparse.ArgumentParser(description='Server listening for flags')
 parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug, info, or warning')
@@ -22,15 +23,15 @@ def logLevel():
         logging.warning('Log Level set to Warning')
 
 def setupDatabase(database):
-    print database
+    logging.info("Using database: %s" % database)
     if not os.path.isfile(os.path.realpath('database/' + database)):
         conn = sqlite3.connect('database/' + database)
         logging.info("Database open: %s" % database)
-        print('database open')
+        logging.info("database open")
 
-        conn.execute('''CREATE TABLE users_points (uname VARCHAR(32) NOT NULL, tot_points INT);''')
-        conn.execute('''CREATE TABLE users_flags (uname VARCHAR(32) NOT NULL, uuid VARCHAR(37));''')
-        conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, message VARCHAR(255));''')
+        conn.execute('''CREATE TABLE user_points (uname VARCHAR(32) NOT NULL, tot_points INT);''')
+        conn.execute('''CREATE TABLE user_flags (uname VARCHAR(32) NOT NULL, uuid VARCHAR(37));''')
+        conn.execute('''CREATE TABLE user_messages (uname VARCHAR(32) NOT NULL, message VARCHAR(255));''')
         conn.execute('''CREATE TABLE flags (uuid VARCHAR(37) NOT NULL, points INT NOT NULL, venomous BOOLEAN DEFAULT 0);''')
         conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(32) NOT NULL);''')
         logging.info("table created in %s" % database)
@@ -67,9 +68,8 @@ def checkModules():
         pass
 
 if __name__ == "__main__":
-    #pip install pycrypto
-    #pip instlal m2crypto
 
+    args = vars(parser.parse_args())
     logLevel()
     checkModules()
 
