@@ -2,7 +2,8 @@
 
 __author__ = 'tom'
 
-import socket, select
+import socket
+import select
 import logging
 import argparse
 import sqlite3
@@ -18,7 +19,7 @@ parser = argparse.ArgumentParser(description='Server listening for flags')
 parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug, info, or warning')
 
 
-def logLevel():
+def loglevel():
     if args['loglevel'] == 'info':
         logging.basicConfig(filename='log/ctfCollector.log', level=logging.INFO, filemode='a', format='%(asctime)s %(message)s',
                             datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -32,13 +33,14 @@ def logLevel():
                             datefmt='%m/%d/%Y %I:%M:%S %p')
         logging.warning('Log Level set to Warning')
 
-def checkDatabase(database):
+def checkdatabase(database):
 
     if not os.path.isfile(os.path.realpath('database/' + database)):
         print('Run setup.py first')
         exit()
 
 def decrypt_RSA(private_key_loc, package):
+
     '''
     param: public_key_loc Path to your private key
     param: package String to be decrypted
@@ -58,8 +60,8 @@ if __name__ == "__main__":
 
     args = vars(parser.parse_args())
 
-    logLevel()
-    checkDatabase('ctfCollector.db')
+    loglevel()
+    checkdatabase('ctfCollector.db')
     privateKey = 'keys/priv.key'
 
     CONNECTION_LIST = []  # list of socket clients
