@@ -4,8 +4,6 @@ import sqlite3
 import os
 import argparse
 
-#ToDo: Check for crypto package installation, make recommendations
-
 parser = argparse.ArgumentParser(description='Server listening for flags')
 parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug, info, or warning')
 
@@ -56,11 +54,24 @@ def generate_RSA(bits=2048):
 
     return private_key, public_key
 
+def checkModules():
+    try:
+        import M2Crypto
+    except ImportError, e:
+        logging.warning("M2Crypto module failed to import. Please install.")
+        pass
+    try:
+        import base64
+    except ImportError, e:
+        logging.warning("base64 module failed to import. Please install.")
+        pass
+
 if __name__ == "__main__":
     #pip install pycrypto
     #pip instlal m2crypto
 
     logLevel()
+    checkModules()
 
     setupDatabase('ctfCollector.db')
     encryption = generate_RSA()
