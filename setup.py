@@ -23,18 +23,18 @@ def logLevel():
         logging.warning('Log Level set to Warning')
 
 def setupDatabase(database):
-    logging.info("Using database: %s" % database)
+    logging.info("Using database: {0}".format(database))
     if not os.path.isfile(os.path.realpath('database/' + database)):
         conn = sqlite3.connect('database/' + database)
-        logging.info("Database open: %s" % database)
+        logging.info("Database open: {0}".format(database))
         logging.info("database open")
 
         conn.execute('''CREATE TABLE user_points (uname VARCHAR(32) NOT NULL, tot_points INT);''')
         conn.execute('''CREATE TABLE user_flags (uname VARCHAR(32) NOT NULL, uuid VARCHAR(37));''')
         conn.execute('''CREATE TABLE user_messages (uname VARCHAR(32) NOT NULL, message VARCHAR(255));''')
-        conn.execute('''CREATE TABLE flags (uuid VARCHAR(37) NOT NULL, points INT NOT NULL, venomous BOOLEAN DEFAULT 0);''')
+        conn.execute('''CREATE TABLE flags (flagname VARCHAR(32), uuid VARCHAR(37) NOT NULL, points INT NOT NULL, venomous BOOLEAN DEFAULT 0);''')
         conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(32) NOT NULL);''')
-        logging.info("table created in %s" % database)
+        logging.info("table created in {0}".formt(database))
 
         conn.commit()
         logging.info("Commit Completed")
