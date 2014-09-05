@@ -1,21 +1,23 @@
 __author__ = 'tom'
 
 import uuid
-#import argparse
+import argparse
+import sqlite3
+import os
+import logging
 
-#parser = argparse.ArgumentParser(description='Used to prove access and add points')
+parser = argparse.ArgumentParser(description='Used to create flags')
+parser.add_argument('-n', '--name', help='Enter name for flag', required=True)
+parser.add_argument('-p', '--points', help='Enter how many points flag is worth', required=True)
+parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or not (0)', default='0')
 
-#args = vars(parser.parse_args())
-
-#ToDo: Give option for venomous flag
-#ToDo: Update flag database when creating flag/UUID
+#ToDo: Add option to include ctfCollector IP address
+#ToDo: Check if uuid exists, if exists create new uuid automatically
+#ToDo: Check if name exists, if exists ask user for new name
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
-#ToDo: Add option to add points to UUID created
-#ToDo: Add option to name flag
 #ToDo: Add option to create just UUID
 
-def createFlag(pub_key, flag_uuid):
-    uuid_split = str(flag_uuid).split('-')
+def createFlag(flag_name, pub_key, flag_uuid):
     script_head = """#!/usr/bin/python
 
 import argparse
@@ -65,13 +67,27 @@ if __name__ == "__main__":
 '''
     script_part = script_end.format(pub_key, flag_uuid)
     full_script = script_head + script_part
-    f = open(uuid_split[0] + '.py', 'w')
+    f = open(flag_name + '.py', 'w')
 
     f.write(full_script)
     f.close()
 
+def update_uuid_db(flagname, newuuid, numpoints, venomous):
+    if os.path.isfile(os.path.realpath('database/ctfCollector.db')):
+        conn = sqlite3.connect('database/ctfCollector.db')
+        logging.info("Attempted to connect to ctfCollector.db")
+        c = conn.cursor()
+        c.execute('''INSERT INTO flags VALUES (?,?,?,?)''', (flagname, newuuid, numpoints, venomous))
+        conn.commit()
+        logging.info("Commit INSERT INTO flags VALUES ({0}, {1}, {2}, {3})".format(flagname, newuuid,
+                                                                                      numpoints, venomous))
+        conn.close()
+        logging.info("Closing connection to database")
+
 if __name__ == "__main__":
+    args = vars(parser.parse_args())
     public_key_loc = 'keys/pub.key'
     flagUUID = uuid.uuid4()
     pubKey = open(public_key_loc, "r").read()
-    createFlag(pubKey, flagUUID)
+    createFlag(args['name'], pubKey, flagUUID)
+    update_uuid_db(args['name'], str(flagUUID), int(args['points']), args['venomous'])
