@@ -24,14 +24,19 @@ ToDo's
 * ToDo: Interact with user_messages table - update with new messages by users
 * ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points
 * ToDo: Create logic for user to submit flag only once
+* ToDo: Create function to validate flag exists
+* ToDo: Create function to validate user exists
 
 ### createFlag.py
-* ToDo: Give option for venomous flag
-* ToDo: Update flag database when creating flag/UUID
+* ToDo: Add option to include ctfCollector IP address
+* ToDo: Check if uuid exists, if exists create new uuid automatically
+* ToDo: Check if name exists, if exists ask user for new name
 * ToDo: Add randomized encoded function for 'Poisoned Flags'
-* ToDo: Add option to add points to UUID created
-* ToDo: Add option to name flag
 * ToDo: Add option to create just UUID
+* ~~ToDo: Give option for venomous flag~~
+* ~~ToDo: Update flag database when creating flag/UUID~~
+* ~~ToDo: Add option to add points to UUID created~~
+* ~~ToDo: Add option to name flag~~
 
 ### Setup.py
 * ~~ToDo: Setup flag database~~
@@ -40,6 +45,8 @@ ToDo's
 * ~~ToDo: Check for crypto package installation, make recommendations~~
 
 ### All
+* ToDo: Ensure adequate comments
+* ToDo: Add more exception handling
 * ToDo: Clean/Optimize script
 * ToDo: Create front-end for interacting with scripts and tracking of player scores.
 
