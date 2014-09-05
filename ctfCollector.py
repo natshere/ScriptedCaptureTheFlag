@@ -14,6 +14,8 @@ import os
 #ToDo: Interact with user_messages table - update with new messages by users
 #ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points
 #ToDo: Create logic for user to submit flag only once
+#ToDo: Create function to validate flag exists
+#ToDo: Create function to validate user exists
 
 parser = argparse.ArgumentParser(description='Server listening for flags')
 parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug, info, or warning')
@@ -105,14 +107,14 @@ if __name__ == "__main__":
                         logData = data.rstrip('\n\r')
                         logging.info("Client %s %s sent: " % addr + logData)
                         if '-' in logData:
-                            username, message, flag = data.split(",")
+                            username, flag, message  = data.split(",")
                             if os.path.isfile(os.path.realpath('database/ctfCollector.db')):
                                 conn = sqlite3.connect('database/ctfCollector.db')
                                 logging.info("Attempted to connect to ctfCollector.db")
                                 c = conn.cursor()
-                                c.execute('''INSERT INTO ctfusers VALUES (?,?,?)''', (username, message, flag))
+                                c.execute('''INSERT INTO user_flags VALUES (?,?)''', (username, flag))
                                 conn.commit()
-                                logging.info("Commiting INSERT INTO ctfusers VALUES (%s, %s, %s)"
+                                logging.info("Commiting INSERT INTO user_flags VALUES (%s, %s, %s)"
                                              % username, message, flag)
                                 conn.close()
                                 logging.info("Closing connection to database")
