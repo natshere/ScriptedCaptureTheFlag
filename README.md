@@ -83,7 +83,7 @@ ToDo's
 =====
 
 ### ctfCollector.py
-* ToDo: Interact with user_messages table - update with new messages by users
+* ~~ToDo: Interact with user_messages table - update with new messages by users~~
 * ~~ToDo: Interact with user_points table - Logic to update scoring in user database~~
 * ~~ToDo: Interact with user_flags table - Update flags as user sends them~~
 * ~~ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points~~

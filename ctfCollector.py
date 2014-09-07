@@ -9,7 +9,6 @@ import argparse
 import sqlite3
 import os
 
-#ToDo: Interact with user_messages table - update with new messages by users
 #ToDo: Create logic for user to submit flag only once (Should be completed check_if_exists function)
 #ToDo: Create function to validate flag exists (Should be completed check_if_uuid_exists function)
 #ToDo: Create function to validate user exists (Should be completed check_if_usrflag_exists function)
@@ -162,16 +161,20 @@ def update_user_score(username, uuid):    # Update users score
         new_points = int(points) - int(flag)    # Subtract if flag is venomous
 
     conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
-    #logging.info("Connecting to ctfCollector.db setup")    # Log to informational
     c = conn.cursor()
     # Insert into user_flags table the username and flag they have obtained
     c.execute('''UPDATE user_points SET tot_points=? WHERE uname=?''', (new_points, username))
     conn.commit()    # commit the changes to the database
-    # Log to informational the insert command
-    #logging.info("UPDATE user_points SET tot_points=%s WHERE uname=%s"
-    #             % username, points)
     conn.close()    # Close connection to sqlite database
-    #logging.info("Closing connection to database")    # Log to info
+
+def user_message_update(username, message):    # Update user messages table
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+    # Insert into user_flags table the username and flag they have obtained
+    c.execute('''INSERT INTO user_messages VALUES (?,?)''', (username, message))
+    conn.commit()    # commit the changes to the database
+    conn.close()    # Close connection to sqlite database
 
     while 1:
         # Get the list sockets which are ready to be read through select
@@ -205,7 +208,8 @@ def update_user_score(username, uuid):    # Update users score
                                     if check_if_uuid_exists(flag):
                                         if check_if_user_exists(username):
                                             update_user_flag(username, flag)    # Update user_flag database
-                                            update_user_score(username, flag)
+                                            update_user_score(username, flag)    # Update users score (venomous = subtract)
+                                            user_message_update(username, message)    # Update user messages table with message
                                         else:
                                             logging.warn("%s username doesn't exist" % username)
                                             print("%s username doesn't exists" % username)
