@@ -15,6 +15,70 @@ Requirements
 * m2crypto
 * pycrypto
 
+Usage
+=====
+
+### Setup.py
+Setup needs to be ran first. This script creates the database, sets up the tables, and checks if required modules are installed.
+
+Simply run:
+```python setup.py```
+
+Usage:
+```
+usage: setup.py [-h] [-l LOGLEVEL]
+
+Server listening for flags
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -l LOGLEVEL, --loglevel LOGLEVEL
+                        Logging level - followed by debug, info, or warning
+```
+
+### ctfCollector.py
+CTFCollector is the listener. This script listens on designated port for incoming connections from flag entries. This
+ script will also update the tables as flag entries come in. Currently set to accept 10 threads.
+
+Simply run:
+```python ctfCollector.py```
+
+Usage:
+```
+usage: ctfCollector.py [-h] [-l LOGLEVEL]
+
+Server listening for flags
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -l LOGLEVEL, --loglevel LOGLEVEL
+                        Logging level - followed by debug, info, or warning
+```
+
+### createFlag.py
+This script will create the flag. The flag can be a script or just a UUID. Flag creators must provide a name and number 
+of points for each flag. Flag creators have the option to make the flag venomous. A venomous flag will remove points 
+from the user if executed.
+
+Required:
+```python createFlag.py -n NAMEOFFLAG -p NUMBER```
+
+Usage:
+```
+usage: createFlag.py [-h] -n NAME -p POINTS [-v VENOMOUS] [-u]
+
+Used to create flags
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -n NAME, --name NAME  Enter name for flag
+  -p POINTS, --points POINTS
+                        Enter how many points flag is worth
+  -v VENOMOUS, --venomous VENOMOUS
+                        Enter if flag is venomous (1), or not (0)
+  -u, --justuuid        Enter to create just a uuid and no script
+```
+
 ToDo's
 =====
 
