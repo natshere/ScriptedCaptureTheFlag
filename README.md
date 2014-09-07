@@ -93,7 +93,7 @@ ToDo's
 
 ### createFlag.py
 * ToDo: Add randomized encoded function for 'Poisoned Flags'
-* ToDo: Fix venomous flag to just require to be added, no argument required
+* ~~ToDo: Fix venomous flag to just require to be added, no argument required~~
 * ~~ToDo: Add option to include ctfCollector IP address~~
 * ~~ToDo: Check if uuid exists, if exists create new uuid automatically~~ (Should be completed with check_if_uuid_exists)
 * ~~ToDo: Check if name exists, if exists ask user for new name~~ (Should be completed with check_if_flagname_exists)
