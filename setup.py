@@ -38,7 +38,7 @@ def setupDatabase(database):    # Set up sqlite database with appropriate tables
         conn.execute('''CREATE TABLE flags (flagname VARCHAR(32), uuid VARCHAR(37) NOT NULL, points INT NOT NULL, venomous BOOLEAN DEFAULT 0);''')
         # Create users table for storing of users passwords
         conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(32) NOT NULL);''')
-        logging.info("tables created in {0}".formt(database))    # Log to informational the completion of table creation
+        logging.info("tables created in {0}".format(database))    # Log to informational the completion of table creation
 
         conn.commit()    # Commit all changes
         logging.info("Commit Completed")    # Log to informational the completion
