@@ -9,12 +9,11 @@ import logging
 parser = argparse.ArgumentParser(description='Used to create flags')
 parser.add_argument('-n', '--name', help='Enter name for flag', required=True)
 parser.add_argument('-p', '--points', help='Enter how many points flag is worth', required=True)
-parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or not (0)', default='0')
+parser.add_argument('-i', '--ipaddress', help='Enter the ip address of the ctfCollector', required=True)
+parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or not (0)', action='store_true')
 parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no script', action='store_true')
 
-#ToDo: Add option to include ctfCollector IP address
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
-#ToDo: Fix venomous flag to just require to be added, no argument required
 
 def check_if_flagname_exists(flagname):    # Check if user has already submitted
 
@@ -36,7 +35,7 @@ def check_if_uuid_exists(createduuid):    # Check if user has already submitted
 
 def createFlag(flag_name, pub_key, flag_uuid):    # Used to create the flag, requires flag name, public key, and uuid
     # Had to split script into 2 sections due to using similar quotes
-    script_head = """#!/usr/bin/python
+    script_argparse = """#!/usr/bin/python
 
 import argparse
 
@@ -45,9 +44,10 @@ parser.add_argument('-u','--username', help='Include your username for adding po
 parser.add_argument('-m','--message', help='Include message to be displayed on scoreboard. Must be encapsulated by quotes'
                     , required=False)
 
-def encrypt_RSA(message):"""
+"""
+    script_encryption = '''
+def encrypt_RSA(message):
 
-    script_end = '''
     key = \"\"\"{0}\"\"\"
 
     from M2Crypto import RSA, BIO
@@ -60,13 +60,15 @@ def encrypt_RSA(message):"""
 
     return encrypted.encode('base64')
 
+'''
+    script_main = '''
 if __name__ == "__main__":
 
     import socket
 
-    uuid = \'{1}\'
+    uuid = \'{0}\'
     args = vars(parser.parse_args())
-    HOST = ''   # Symbolic name meaning the local host
+    HOST = \'{1}\'   # Symbolic name meaning the local host
     PORT = 65535    # Arbitrary non-privileged port
     username = args['username']
 
@@ -83,8 +85,10 @@ if __name__ == "__main__":
     encryptedCommand = encrypt_RSA(command)
     s.send(encryptedCommand)
 '''
-    script_part = script_end.format(pub_key, flag_uuid)    # Insert the variable public key and uuid (unique to each flag)
-    full_script = script_head + script_part    # Tie string (script) together
+    server_ip = args['ipaddress']
+    script_encryption = script_encryption.format(pub_key)
+    script_part = script_main.format(flag_uuid, server_ip)    # Insert the variable public key and uuid (unique to each flag)
+    full_script = script_argparse + script_encryption + script_part    # Tie string (script) together
     f = open(flag_name + '.py', 'w')    # Open script (named by user) for writing
 
     f.write(full_script)    # Write script to file
