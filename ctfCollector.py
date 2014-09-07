@@ -9,10 +9,7 @@ import argparse
 import sqlite3
 import os
 
-#ToDo: Interact with user_points table - Logic to update scoring in user database
-#ToDo: Interact with user_flags table - Update flags as user sends them
 #ToDo: Interact with user_messages table - update with new messages by users
-#ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points
 #ToDo: Create logic for user to submit flag only once (Should be completed check_if_exists function)
 #ToDo: Create function to validate flag exists (Should be completed check_if_uuid_exists function)
 #ToDo: Create function to validate user exists (Should be completed check_if_usrflag_exists function)
@@ -109,6 +106,73 @@ if __name__ == "__main__":
     CONNECTION_LIST.append(server_socket)
     logging.info("Chat server started on port " + str(PORT))    # Log to info
 
+def update_user_flag(username, flag):    # Add flag to the user - used to allow only one time use of flags
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    logging.info("Connecting to ctfCollector.db setup")    # Log to informational
+    c = conn.cursor()
+    # Insert into user_flags table the username and flag they have obtained
+    c.execute('''INSERT INTO user_flags VALUES (?,?)''', (username, flag))
+    conn.commit()    # commit the changes to the database
+    # Log to informational the insert command
+    logging.info("Commiting INSERT INTO user_flags VALUES (%s, %s)"
+                 % username, flag)
+    conn.close()    # Close connection to sqlite database
+    logging.info("Closing connection to database")    # Log to info
+
+def get_users_current_score(username):
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+
+    c.execute('''SELECT tot_points FROM user_points WHERE uname = ?''', (username,))    # Check if user exists
+    returnvalue = c.fetchone()
+    c.close()
+    return returnvalue[0]
+
+def get_flag_worth(uuid):
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+
+    c.execute('''SELECT points FROM flags WHERE uuid = ?''', (uuid,))    # Check if user exists
+    returnvalue = c.fetchone()
+    c.close()
+    return returnvalue[0]
+
+def get_is_flag_venomous(uuid):
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+
+    c.execute('''SELECT venomous FROM flags WHERE uuid = ?''', (uuid,))    # Check if user exists
+    returnvalue = c.fetchone()
+    c.close()
+    return returnvalue[0]
+
+def update_user_score(username, uuid):    # Update users score
+
+    points = get_users_current_score(username) # Get users current score for adding and updating
+    print "Points: " + str(points)
+    flag = get_flag_worth(uuid)
+    print "Flag: " + str(flag)
+
+    if not get_is_flag_venomous(uuid):    # Check if flag is not venomous
+        new_points = int(points) + int(flag)    # Add if flag is not venomous
+    else:
+        new_points = int(points) - int(flag)    # Subtract if flag is venomous
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    #logging.info("Connecting to ctfCollector.db setup")    # Log to informational
+    c = conn.cursor()
+    # Insert into user_flags table the username and flag they have obtained
+    c.execute('''UPDATE user_points SET tot_points=? WHERE uname=?''', (new_points, username))
+    conn.commit()    # commit the changes to the database
+    # Log to informational the insert command
+    #logging.info("UPDATE user_points SET tot_points=%s WHERE uname=%s"
+    #             % username, points)
+    conn.close()    # Close connection to sqlite database
+    #logging.info("Closing connection to database")    # Log to info
+
     while 1:
         # Get the list sockets which are ready to be read through select
         read_sockets, write_sockets, error_sockets = select.select(CONNECTION_LIST, [], [])
@@ -140,17 +204,8 @@ if __name__ == "__main__":
                                 if not check_if_usrflag_exists(flag, username):    # Check if user has already submitted flag
                                     if check_if_uuid_exists(flag):
                                         if check_if_user_exists(username):
-                                            conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
-                                            logging.info("Attempted to connect to ctfCollector.db")    # Log to informational
-                                            c = conn.cursor()
-                                            # Insert into user_flags table the username and flag they have obtained
-                                            c.execute('''INSERT INTO user_flags VALUES (?,?)''', (username, flag))
-                                            conn.commit()    # commit the changes to the database
-                                            # Log to informational the insert command
-                                            logging.info("Commiting INSERT INTO user_flags VALUES (%s, %s)"
-                                                         % username, flag)
-                                            conn.close()    # Close connection to sqlite database
-                                            logging.info("Closing connection to database")    # Log to info
+                                            update_user_flag(username, flag)    # Update user_flag database
+                                            update_user_score(username, flag)
                                         else:
                                             logging.warn("%s username doesn't exist" % username)
                                             print("%s username doesn't exists" % username)

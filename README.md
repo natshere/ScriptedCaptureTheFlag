@@ -83,10 +83,10 @@ ToDo's
 =====
 
 ### ctfCollector.py
-* ToDo: Interact with user_points table - Logic to update scoring in user database
-* ToDo: Interact with user_flags table - Update flags as user sends them
 * ToDo: Interact with user_messages table - update with new messages by users
-* ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points
+* ~~ToDo: Interact with user_points table - Logic to update scoring in user database~~
+* ~~ToDo: Interact with user_flags table - Update flags as user sends them~~
+* ~~ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points~~
 * ~~ToDo: Create logic for user to submit flag only once~~ (Should be completed check_if_user_exists function)
 * ~~ToDo: Create function to validate flag exists~~ (Should be completed check_if_uuid_exists function)
 * ~~ToDo: Create function to validate user exists~~ (Should be completed check_if_usrflag_exists function)
@@ -111,6 +111,7 @@ ToDo's
 
 ### All
 * ~~ToDo: Ensure adequate comments~~
+* ToDo: When user is created, update user_points table with 0 points
 * ToDo: Add more exception handling
 * ToDo: Clean/Optimize script
 * ToDo: Create front-end for interacting with scripts and tracking of player scores.
