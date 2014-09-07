@@ -13,7 +13,6 @@ parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or 
 parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no script', action='store_true')
 
 #ToDo: Add option to include ctfCollector IP address
-#ToDo: Check if uuid exists, if exists create new uuid automatically
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
 
 def check_if_flagname_exists(flagname):    # Check if user has already submitted
@@ -22,6 +21,15 @@ def check_if_flagname_exists(flagname):    # Check if user has already submitted
     c = conn.cursor()
 
     c.execute('''SELECT EXISTS(SELECT * FROM flags WHERE flagname = ?)''', (flagname,))    # Check if user exists
+    returnvalue = c.fetchone()
+    return returnvalue[0]
+
+def check_if_uuid_exists(createduuid):    # Check if user has already submitted
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+
+    c.execute('''SELECT EXISTS(SELECT * FROM flags WHERE uuid = ?)''', (createduuid,))    # Check if user exists
     returnvalue = c.fetchone()
     return returnvalue[0]
 
@@ -103,9 +111,12 @@ if __name__ == "__main__":
     flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
     flagname = args['name']
 
-    if check_if_flagname_exists(flagname):
+    if check_if_flagname_exists(flagname):    # Check if flag name already exists, ask user for new one if does
         print "Flag name already exists, please select a new one: ",
         flagname = raw_input()
+
+    if check_if_uuid_exists(flagUUID):
+        flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
 
     if not args['justuuid']:
         public_key_loc = 'keys/pub.key'    # Assign public key location to variable
