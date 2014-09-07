@@ -10,12 +10,12 @@ parser = argparse.ArgumentParser(description='Used to create flags')
 parser.add_argument('-n', '--name', help='Enter name for flag', required=True)
 parser.add_argument('-p', '--points', help='Enter how many points flag is worth', required=True)
 parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or not (0)', default='0')
+parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no script', action='store_true')
 
 #ToDo: Add option to include ctfCollector IP address
 #ToDo: Check if uuid exists, if exists create new uuid automatically
 #ToDo: Check if name exists, if exists ask user for new name
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
-#ToDo: Add option to create just UUID
 
 def createFlag(flag_name, pub_key, flag_uuid):    # Used to create the flag, requires flag name, public key, and uuid
     # Had to split script into 2 sections due to using similar quotes
@@ -92,8 +92,13 @@ def update_uuid_db(flagname, newuuid, numpoints, venomous):     # Insert flag in
 if __name__ == "__main__":
     args = vars(parser.parse_args())    # Assign arguments to args variable
 
-    public_key_loc = 'keys/pub.key'    # Assign public key location to variable
     flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
-    pubKey = open(public_key_loc, "r").read()    # Feed the key to variable for writing
-    createFlag(args['name'], pubKey, flagUUID)    # Create the new flag
-    update_uuid_db(args['name'], str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
+
+    if not args['justuuid']:
+        public_key_loc = 'keys/pub.key'    # Assign public key location to variable
+        pubKey = open(public_key_loc, "r").read()    # Feed the key to variable for writing
+        createFlag(args['name'], pubKey, flagUUID)    # Create the new flag
+        update_uuid_db(args['name'], str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
+    else:
+        print "New Flag UUID: " + str(flagUUID)
+        update_uuid_db(args['name'], str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information

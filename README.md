@@ -32,7 +32,7 @@ ToDo's
 * ToDo: Check if uuid exists, if exists create new uuid automatically
 * ToDo: Check if name exists, if exists ask user for new name
 * ToDo: Add randomized encoded function for 'Poisoned Flags'
-* ToDo: Add option to create just UUID
+* ~~ToDo: Add option to create just UUID~~
 * ~~ToDo: Give option for venomous flag~~
 * ~~ToDo: Update flag database when creating flag/UUID~~
 * ~~ToDo: Add option to add points to UUID created~~
