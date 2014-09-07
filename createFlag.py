@@ -17,7 +17,8 @@ parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or 
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
 #ToDo: Add option to create just UUID
 
-def createFlag(flag_name, pub_key, flag_uuid):
+def createFlag(flag_name, pub_key, flag_uuid):    # Used to create the flag, requires flag name, public key, and uuid
+    # Had to split script into 2 sections due to using similar quotes
     script_head = """#!/usr/bin/python
 
 import argparse
@@ -65,29 +66,34 @@ if __name__ == "__main__":
     encryptedCommand = encrypt_RSA(command)
     s.send(encryptedCommand)
 '''
-    script_part = script_end.format(pub_key, flag_uuid)
-    full_script = script_head + script_part
-    f = open(flag_name + '.py', 'w')
+    script_part = script_end.format(pub_key, flag_uuid)    # Insert the variable public key and uuid (unique to each flag)
+    full_script = script_head + script_part    # Tie string (script) together
+    f = open(flag_name + '.py', 'w')    # Open script (named by user) for writing
 
-    f.write(full_script)
-    f.close()
+    f.write(full_script)    # Write script to file
+    f.close()    # Close the file
 
-def update_uuid_db(flagname, newuuid, numpoints, venomous):
-    if os.path.isfile(os.path.realpath('database/ctfCollector.db')):
-        conn = sqlite3.connect('database/ctfCollector.db')
-        logging.info("Attempted to connect to ctfCollector.db")
+def update_uuid_db(flagname, newuuid, numpoints, venomous):     # Insert flag information into database
+    if os.path.isfile(os.path.realpath('database/ctfCollector.db')):    # Make sure path exists
+        conn = sqlite3.connect('database/ctfCollector.db')    # Set up connection to database
+        logging.info("Connection setup for ctfCollector.db")    # Log the connection setup to informational
         c = conn.cursor()
+        # Insert flag name, uuid, worth points, and whether or not it's venomous
         c.execute('''INSERT INTO flags VALUES (?,?,?,?)''', (flagname, newuuid, numpoints, venomous))
-        conn.commit()
+        conn.commit()    # Commit changes
+        # Log the change
         logging.info("Commit INSERT INTO flags VALUES ({0}, {1}, {2}, {3})".format(flagname, newuuid,
                                                                                       numpoints, venomous))
-        conn.close()
-        logging.info("Closing connection to database")
+        conn.close()    # Close the connection
+        logging.info("Closing connection to database")    # Log the closure to informational
+    else:
+        print('There is a problem with the database. Delete and restart')    # Make some recommendations, this shouldn't happen
 
 if __name__ == "__main__":
-    args = vars(parser.parse_args())
-    public_key_loc = 'keys/pub.key'
-    flagUUID = uuid.uuid4()
-    pubKey = open(public_key_loc, "r").read()
-    createFlag(args['name'], pubKey, flagUUID)
-    update_uuid_db(args['name'], str(flagUUID), int(args['points']), args['venomous'])
+    args = vars(parser.parse_args())    # Assign arguments to args variable
+
+    public_key_loc = 'keys/pub.key'    # Assign public key location to variable
+    flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
+    pubKey = open(public_key_loc, "r").read()    # Feed the key to variable for writing
+    createFlag(args['name'], pubKey, flagUUID)    # Create the new flag
+    update_uuid_db(args['name'], str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
