@@ -27,7 +27,6 @@ def check_if_usrflag_exists(username, uuid):    # Check if user has already subm
 
     c.execute('''SELECT EXISTS(SELECT * FROM user_flags WHERE uname = ? and uuid = ?)''', (username, uuid,))    # Check if user exists
     returnvalue = c.fetchone()
-    print returnvalue
     return returnvalue[0]
 
 def check_if_uuid_exists(uuid):    # Check if flag exists
