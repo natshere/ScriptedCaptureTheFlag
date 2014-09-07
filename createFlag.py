@@ -14,6 +14,7 @@ parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no
 
 #ToDo: Add option to include ctfCollector IP address
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
+#ToDo: Fix venomous flag to just require to be added, no argument required
 
 def check_if_flagname_exists(flagname):    # Check if user has already submitted
 
