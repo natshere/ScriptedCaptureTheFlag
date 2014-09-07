@@ -13,15 +13,43 @@ import os
 #ToDo: Interact with user_flags table - Update flags as user sends them
 #ToDo: Interact with user_messages table - update with new messages by users
 #ToDo: Interact with flags table - Check if flag is venomous and deduct set number of points
-#ToDo: Create logic for user to submit flag only once
-#ToDo: Create function to validate flag exists
-#ToDo: Create function to validate user exists
+#ToDo: Create logic for user to submit flag only once (Should be completed check_if_exists function)
+#ToDo: Create function to validate flag exists (Should be completed check_if_uuid_exists function)
+#ToDo: Create function to validate user exists (Should be completed check_if_usrflag_exists function)
 
 parser = argparse.ArgumentParser(description='Server listening for flags')
 parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug, info, or warning')
 
+def check_if_usrflag_exists(username, uuid):    # Check if user has already submitted
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+
+    c.execute('''SELECT EXISTS(SELECT * FROM user_flags WHERE uname = ? and uuid = ?)''', (username, uuid,))    # Check if user exists
+    returnvalue = c.fetchone()
+    print returnvalue
+    return returnvalue[0]
+
+def check_if_uuid_exists(uuid):    # Check if flag exists
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+
+    c.execute('''SELECT EXISTS(SELECT * FROM flags WHERE uuid = ?)''', (uuid,))    # Check if user exists
+    returnvalue = c.fetchone()
+    return returnvalue[0]
+
+def check_if_user_exists(username):
+
+    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    c = conn.cursor()
+
+    c.execute('''SELECT EXISTS(SELECT * FROM users WHERE uname = ?)''', (username,))    # Check if user exists
+    returnvalue = c.fetchone()
+    return returnvalue[0]
 
 def loglevel():    # Used to set log levels based on argument
+
     if args['loglevel'] == 'info':    # Infomrational log level if loglevel argument == info
         logging.basicConfig(filename='log/ctfCollector.log', level=logging.INFO, filemode='a', format='%(asctime)s %(message)s',
                             datefmt='%m/%d/%Y %I:%M:%S %p')
@@ -110,17 +138,29 @@ if __name__ == "__main__":
                         if ',' in logData:    # Validate proper string structure exists
                             username, flag, message  = data.split(",")    # Split up the string to variables for insert
                             if os.path.isfile(os.path.realpath('database/ctfCollector.db')):    # Validate database exists
-                                conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
-                                logging.info("Attempted to connect to ctfCollector.db")    # Log to informational
-                                c = conn.cursor()
-                                # Insert into user_flags table the username and flag they have obtained
-                                c.execute('''INSERT INTO user_flags VALUES (?,?)''', (username, flag))
-                                conn.commit()    # commit the changes to the database
-                                # Log to informational the insert command
-                                logging.info("Commiting INSERT INTO user_flags VALUES (%s, %s, %s)"
-                                             % username, message, flag)
-                                conn.close()    # Close connection to sqlite database
-                                logging.info("Closing connection to database")    # Log to info
+                                if not check_if_usrflag_exists(flag, username):    # Check if user has already submitted flag
+                                    if check_if_uuid_exists(flag):
+                                        if check_if_user_exists(username):
+                                            conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+                                            logging.info("Attempted to connect to ctfCollector.db")    # Log to informational
+                                            c = conn.cursor()
+                                            # Insert into user_flags table the username and flag they have obtained
+                                            c.execute('''INSERT INTO user_flags VALUES (?,?)''', (username, flag))
+                                            conn.commit()    # commit the changes to the database
+                                            # Log to informational the insert command
+                                            logging.info("Commiting INSERT INTO user_flags VALUES (%s, %s)"
+                                                         % username, flag)
+                                            conn.close()    # Close connection to sqlite database
+                                            logging.info("Closing connection to database")    # Log to info
+                                        else:
+                                            logging.warn("%s username doesn't exist" % username)
+                                            print("%s username doesn't exists" % username)
+                                    else:
+                                        logging.warn("%s flag doesn't exist" % flag)
+                                        print("%s flag doesn't exists" % flag)
+                                else:
+                                    logging.warn("%s submitted twice" % username)
+                                    print("%s submitted twice" % username)    # ToDo: Find a way to give this back to the user
                             else:
                                 logging.warning("No database available")    # Warn that database does not exist
                                 print('Run setup.py first')    # Print next steps if not
