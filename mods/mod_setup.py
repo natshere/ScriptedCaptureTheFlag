@@ -1,5 +1,16 @@
 #!/usr/bin/python
 
+import logging
+import os
+
+current_directory = os.getcwd()
+logger = logging.getLogger('ctfCollector')
+hdlr = logging.FileHandler(current_directory + '/log/setup.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.INFO)
+
 def setupDatabase(database):    # Set up sqlite database with appropriate tables and columns
 
     import logging
@@ -29,6 +40,7 @@ def setupDatabase(database):    # Set up sqlite database with appropriate tables
         logging.info("Connection to database closed")    # Log ot informational the closure of connection
 
 def generate_RSA(bits=2048):
+
     '''
     Generate an RSA keypair with an exponent of 65537 in PEM format
     param: bits The key length in bits
@@ -43,6 +55,7 @@ def generate_RSA(bits=2048):
     return private_key, public_key
 
 def checkModules():    # Validate M2Crypto and base64 modules are installed
+
     import logging
     try:
         import M2Crypto

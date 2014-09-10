@@ -37,15 +37,15 @@ parser.add_argument('-m','--message', help='Include message to be displayed on s
     script_encryption = '''
 def encrypt_RSA(message):
 
+    from Crypto.PublicKey import RSA
+    from Crypto.Cipher import PKCS1_OAEP
+
     key = \"\"\"{0}\"\"\"
 
-    from M2Crypto import RSA, BIO
+    rsakey = RSA.importKey(key)
+    rsakey = PKCS1_OAEP.new(rsakey)
 
-    pubkey = str(key).encode('utf8')
-    bio = BIO.MemoryBuffer(pubkey)
-    rsa = RSA.load_pub_key_bio(bio)
-
-    encrypted = rsa.public_encrypt(message, RSA.pkcs1_oaep_padding)
+    encrypted = rsakey.encrypt(message)
 
     return encrypted.encode('base64')
 

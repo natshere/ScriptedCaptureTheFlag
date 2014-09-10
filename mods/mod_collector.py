@@ -1,23 +1,50 @@
 #!/usr/bin/python
 
+import logging
+import os
+
+current_directory = os.getcwd()
+logger = logging.getLogger('ctfCollector')
+hdlr = logging.FileHandler(current_directory + '/log/ctfCollector.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.INFO)
+
 def check_if_userflag_exists(uuid, username):    # Check if user has already submitted
 
     import sqlite3
-    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
-    c = conn.cursor()
+    try:
+        conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+        c = conn.cursor()
+    except Exception, e:
+        logger.info(e)
 
-    c.execute('''SELECT EXISTS(SELECT * FROM user_flags WHERE uname = ? and uuid = ?)''', (username, uuid,))    # Check if user exists
-    returnvalue = c.fetchone()
+    try:
+        c.execute('''SELECT EXISTS(SELECT * FROM user_flags WHERE uname = ? and uuid = ?)''', (username, uuid,))    # Check if user exists
+        returnvalue = c.fetchone()
+    except Exception, e:
+        logger.info(e)
+
     return returnvalue[0]
 
 def check_if_uuid_exists(uuid):    # Check if flag exists
 
     import sqlite3
-    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
-    c = conn.cursor()
 
-    c.execute('''SELECT EXISTS(SELECT * FROM flags WHERE uuid = ?)''', (uuid,))    # Check if user exists
-    returnvalue = c.fetchone()
+    try:
+        conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+        c = conn.cursor()
+    except Exception, e:
+        logger.info(e)
+
+
+    try:
+        c.execute('''SELECT EXISTS(SELECT * FROM flags WHERE uuid = ?)''', (uuid,))    # Check if user exists
+        returnvalue = c.fetchone()
+    except Exception, e:
+        logger.info(e)
+
     return returnvalue[0]
 
 def check_if_user_exists(username):
@@ -33,11 +60,18 @@ def check_if_user_exists(username):
 def check_if_user_exists_points(username):
 
     import sqlite3
-    conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
-    c = conn.cursor()
+    try:
+        conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+        c = conn.cursor()
+    except Exception, e:
+        logger.info(e)
 
-    c.execute('''SELECT EXISTS(SELECT * FROM user_points WHERE uname = ?)''', (username,))    # Check if user exists
-    returnvalue = c.fetchone()
+    try:
+        c.execute('''SELECT EXISTS(SELECT * FROM user_points WHERE uname = ?)''', (username,))    # Check if user exists
+        returnvalue = c.fetchone()
+    except Exception, e:
+        logger.info(e)
+
     return returnvalue[0]
 
 def checkdatabase(database):    # Validate the database exists in the correct directory. Recommend running setup.py otherwise
@@ -54,17 +88,21 @@ def decrypt_RSA(private_key_loc, package):
     param: package String to be decrypted
     return decrypted string
     '''
+
+    from Crypto.PublicKey import RSA
+    from Crypto.Cipher import PKCS1_OAEP
     from base64 import b64decode
-    from M2Crypto import BIO, RSA
 
-    key = open(private_key_loc, "r").read()    # Read private key to key variable for decryption
-    priv_key = BIO.MemoryBuffer(key.encode('utf8'))    # Encode key with utf8
-    key = RSA.load_key_bio(priv_key)    # Load the encoded private key
-    decrypted = key.private_decrypt(b64decode(package), RSA.pkcs1_oaep_padding)    # Decrypt the 'package'
+    key = open(private_key_loc, "r").read()
 
-    return decrypted    # Return decrypted content
+    rsakey = RSA.importKey(key)
+    rsakey = PKCS1_OAEP.new(rsakey)
+
+    decrypted = rsakey.decrypt(b64decode(package))
+    return decrypted
 
 def sanitize(table_name):    # On standby for the need to scrub sql input
+
     return ''.join( chr for chr in table_name if chr.isalnum() )    # Return string with only allow alphanumeric characters
 
 def update_user_flag(username, flag):    # Add flag to the user - used to allow only one time use of flags

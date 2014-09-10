@@ -8,7 +8,6 @@ import logging
 import argparse
 import os
 import mods.mod_collector as collector_def
-import mods.mod_global as global_def
 
 #ToDo: Create logic for user to submit flag only once (Should be completed check_if_exists function)
 #ToDo: Create function to validate flag exists (Should be completed check_if_uuid_exists function)
@@ -19,80 +18,131 @@ parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug,
 
 if __name__ == "__main__":
 
-    args = vars(parser.parse_args())    # Pull arguments into args variable
+    current_directory = os.getcwd()
 
-    global_def.loglevel(args['loglevel'])    # Set log level
-    collector_def.checkdatabase('ctfCollector.db')    # Validate database exists in correct directory
+    logger = logging.getLogger('ctfCollector')
+    hdlr = logging.FileHandler(current_directory + '/log/ctfCollector.log')
+    formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+    hdlr.setFormatter(formatter)
+    logger.addHandler(hdlr)
+    logger.setLevel(logging.INFO)
+
     privateKey = 'keys/priv.key'    # Assign location of private key to privateKey variable
+
+    try:
+        args = vars(parser.parse_args())    # Pull arguments into args variable
+    except Exception, e:
+        logger.info(e)
+
+    try:
+        collector_def.checkdatabase('ctfCollector.db')    # Validate database exists in correct directory
+    except Exception, e:
+        logger.info(e)
+
 
     CONNECTION_LIST = []  # list of socket clients
     RECV_BUFFER = 4096  # Advisable to keep it as an exponent of 2
     PORT = 65535    # Set listening port
 
-    server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-    server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    server_socket.bind(("0.0.0.0", PORT))    # Bind locally to appropriate port
-    server_socket.listen(10)    # Listen and allow for 10 threads
+    try:
+        server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        server_socket.bind(("0.0.0.0", PORT))    # Bind locally to appropriate port
+        server_socket.listen(10)    # Listen and allow for 10 threads
+    except Exception, e:
+        logger.info(e)
 
-    # Add server socket to the list of readable connections
-    CONNECTION_LIST.append(server_socket)
-    logging.info("Chat server started on port " + str(PORT))    # Log to info
+    try:
+        # Add server socket to the list of readable connections
+        CONNECTION_LIST.append(server_socket)
+    except Exception, e:
+        logger.info(e)
 
     while 1:
-        # Get the list sockets which are ready to be read through select
-        read_sockets, write_sockets, error_sockets = select.select(CONNECTION_LIST, [], [])
+        try:
+            # Get the list sockets which are ready to be read through select
+            read_sockets, write_sockets, error_sockets = select.select(CONNECTION_LIST, [], [])
+        except Exception, e:
+            logger.info(e)
 
         for sock in read_sockets:
-
             # New connection
             if sock == server_socket:
-                # Handle the case in which there is a new connection received through server_socket
-                sockfd, addr = server_socket.accept()
-                CONNECTION_LIST.append(sockfd)
-                logging.info("Client %s %s connected" % addr)    # Log to info
+                try:
+                    # Handle the case in which there is a new connection received through server_socket
+                    sockfd, addr = server_socket.accept()
+                except Exception, e:
+                    logger.info(e)
 
+                try:
+                    CONNECTION_LIST.append(sockfd)
+                except Exception, e:
+                    logger.info(e)
             #Some incoming message from a client
             else:
                 # Data received from client, process it
                 try:
                     #In Windows, sometimes when a TCP program closes abruptly,
                     # a "Connection reset by peer" exception will be thrown
-                    encryptedData = sock.recv(RECV_BUFFER)    # Receive the encrypted package
+                    encryptedData = sock.recv(RECV_BUFFER).rstrip('\n\r')    # Receive the encrypted package
                     data = collector_def.decrypt_RSA(privateKey, encryptedData)    # Decrypt and assign to data variable
-
                     if data:    # If data exists
-                        logData = data.rstrip('\n\r')
-                        logging.info("Client %s %s sent: " % addr + logData)    # Log to info
-                        #print logData
+                        try:
+                            logData = data.rstrip('\n\r')
+                        except Exception, e:
+                            logger.info(e)
+                            logger.info("Client %s %s sent: " % addr + logData)    # Log to info
                         if ',' in logData:    # Validate proper string structure exists
-                            username, flag, message  = data.split(",")    # Split up the string to variables for insert
-                            if os.path.isfile(os.path.realpath('database/ctfCollector.db')):    # Validate database exists
+                            try:
+                                username, flag, message  = data.split(",")    # Split up the string to variables for insert
+                            except Exception, e:
+                                logger.info(e)
+                            if os.path.isfile(os.path.realpath(current_directory + '/database/ctfCollector.db')):    # Validate database exists
                                 # Not sure why 'not collector_def.check_if_userflag_... works - used just if
-                                if collector_def.check_if_userflag_exists(flag, username) == 0:    # Check if user has already submitted flag
-                                    if collector_def.check_if_uuid_exists(flag):
-                                        if collector_def.check_if_user_exists(username):
-                                            collector_def.update_user_flag(username, flag)    # Update user_flag database
-                                            collector_def.update_user_score(username, flag)    # Update users score (venomous = subtract)
-                                            collector_def.user_message_update(username, message)    # Update user messages table with message
+                                try:
+                                    user_flag_exists = collector_def.check_if_userflag_exists(flag, username)
+                                except Exception, e:
+                                    logger.info(e)
+                                if user_flag_exists == 0:    # Check if user has already submitted flag
+                                    try:
+                                        uuid_exists = collector_def.check_if_uuid_exists(flag)
+                                    except Exception, e:
+                                        logger.info(e)
+                                    if uuid_exists:
+                                        try:
+                                           user_exists = collector_def.check_if_user_exists(username)
+                                        except Exception, e:
+                                            logger.info(e)
+                                        if user_exists:
+                                            try:
+                                                collector_def.update_user_flag(username, flag)    # Update user_flag database
+                                            except Exception, e:
+                                                logger.info(e)
+                                            try:
+                                                collector_def.update_user_score(username, flag)    # Update users score (venomous = subtract)
+                                            except Exception, e:
+                                                logger.info(e)
+                                            try:
+                                                collector_def.user_message_update(username, message)    # Update user messages table with message
+                                            except Exception, e:
+                                                logger.info(e)
                                         else:
-                                            logging.warn("%s username doesn't exist" % username)
-                                            print("%s username doesn't exists" % username)
+                                            logger.info("%s username doesn't exist" % username)
                                     else:
-                                        logging.warn("%s flag doesn't exist" % flag)
-                                        print("%s flag doesn't exists" % flag)
+                                        logger.info("%s flag doesn't exist" % flag)
                                 else:
-                                    logging.warn("%s submitted twice" % username)
-                                    print("%s submitted twice" % username)    # ToDo: Find a way to give this back to the user
+                                    logger.info("%s has submitted more than once" % username) # ToDo: Find a way to give this back to the user
                             else:
-                                logging.warning("No database available")    # Warn that database does not exist
+                                logger.info("No database available")    # Warn that database does not exist
                                 print('Run setup.py first')    # Print next steps if not
                                 exit()    # Exist script due to setup not being ran
-
                 # client disconnected, so remove from socket list
-                except:
-                    logging.warning("Client %s %s is offline" % addr)    # Log to warn due to potential issue
-                    sock.close()    # Close socket due to exception error
-                    CONNECTION_LIST.remove(sock)    # Remove from list of sockets
+                except Exception, e:
+                    logger.info(e)
+                    try:
+                        sock.close()    # Close socket due to exception error
+                        CONNECTION_LIST.remove(sock)    # Remove from list of sockets
+                    except Exception, e:
+                        logger.info(e)
                     continue    # Keep server listening
-
     server_socket.close()    # Should never close
