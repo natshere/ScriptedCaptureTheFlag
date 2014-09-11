@@ -3,6 +3,7 @@ __author__ = 'tom'
 import uuid
 import argparse
 import logging
+import os
 import mods.mod_createflag as create_flag_def
 
 parser = argparse.ArgumentParser(description='Used to create flags')
@@ -43,18 +44,46 @@ if __name__ == "__main__":
     except Exception, e:
         logger.inf(e)
 
-    if create_flag_def.check_if_flagname_exists(flagname):    # Check if flag name already exists, ask user for new one if does
-        print "Flag name already exists, please select a new one: ",
-        flagname = raw_input()
+    try:
+        if create_flag_def.check_if_flagname_exists(flagname):    # Check if flag name already exists, ask user for new one if does
+            print "Flag name already exists, please select a new one: ",
+            flagname = raw_input()
+    except Exception, e:
+        logger.inf(e)
+    try:
+        if create_flag_def.check_if_uuid_exists(flagUUID):
+            try:
+                flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
+            except Exception, e:
+                logger.inf(e)
+    except Exception, e:
+        logger.inf(e)
 
-    if create_flag_def.check_if_uuid_exists(flagUUID):
-        flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
+    try:
+        if not args['justuuid']:
+            public_key_loc = 'keys/pub.key'    # Assign public key location to variable
+            try:
+                pubKey = open(public_key_loc, "r").read()    # Feed the key to variable for writing
+            except Exception, e:
+                logger.inf(e)
 
-    if not args['justuuid']:
-        public_key_loc = 'keys/pub.key'    # Assign public key location to variable
-        pubKey = open(public_key_loc, "r").read()    # Feed the key to variable for writing
-        create_flag_def.createFlag(flagname, pubKey, flagUUID, ipaddress)    # Create the new flag
-        create_flag_def.update_uuid_db(flagname, str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
-    else:
-        print "New Flag UUID: " + str(flagUUID)
-        create_flag_def.update_uuid_db(flagname, str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
+            try:
+                create_flag_def.createFlag(flagname, pubKey, flagUUID, ipaddress)    # Create the new flag
+            except Exception, e:
+                logger.inf(e)
+
+            try:
+                create_flag_def.update_uuid_db(flagname, str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
+            except Exception, e:
+                logger.inf(e)
+        else:
+            try:
+                print "New Flag UUID: " + str(flagUUID)
+            except Exception, e:
+                logger.inf(e)
+            try:
+                create_flag_def.update_uuid_db(flagname, str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
+            except Exception, e:
+                logger.inf(e)
+    except Exception, e:
+        logger.inf(e)
