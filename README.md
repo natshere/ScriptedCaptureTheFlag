@@ -82,7 +82,14 @@ optional arguments:
 ToDo's
 =====
 
+### createUser.py
+* ToDo: Logic to make sure user doesn't already exist
+* ToDo: Insert hashed password into user database
+* ToDo: Insert salt into salt database
+
 ### ctfCollector.py
+* ToDo: pull salt from salt database
+* ToDo: pull hashed password from user database
 * ~~ToDo: Interact with user_messages table - update with new messages by users~~
 * ~~ToDo: Interact with user_points table - Logic to update scoring in user database~~
 * ~~ToDo: Interact with user_flags table - Update flags as user sends them~~
@@ -104,16 +111,17 @@ ToDo's
 * ~~ToDo: Add option to name flag~~
 
 ### Setup.py
+* ToDo: Create user/salt database
 * ~~ToDo: Setup flag database~~
 * ~~ToDo: Setup user database for login/tracking of points (current version only tracks name/points/flags~~
 * ~~ToDo: Change prints to logging - Include setup.log~~
 * ~~ToDo: Check for crypto package installation, make recommendations~~
 
 ### All
-* ~~ToDo: Ensure adequate comments~~
 * ToDo: When user is created, update user_points table with 0 points
-* ToDo: Add more exception handling
 * ToDo: Clean/Optimize script
 * ToDo: Create front-end for interacting with scripts and tracking of player scores.
+* ~~ToDo: Ensure adequate comments~~
+* ~~ToDo: Add more exception handling~~
 
 Needs plenty of work. If you have more idea's please submit. 

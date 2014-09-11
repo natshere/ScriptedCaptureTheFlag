@@ -363,3 +363,17 @@ def user_message_update(username, message):    # Update user messages table
         conn.close()    # Close connection to sqlite database
     except Exception, e:
         logger.info(e)
+
+def validate_passwd(password, salt, hashedpasswd):
+    # ToDo: pull salt from salt database
+    # ToDo: pull hashed password from user database
+    import hashlib
+
+    m = hashlib.md5()
+    m.update(salt + password)
+    salted_password = m.hexdigest()
+
+    if hashedpasswd != salted_password:
+        print('Password does not match')
+    else:
+        print('Password matches')

@@ -10,6 +10,7 @@ import os
 import mods.mod_collector as collector_def
 
 # ToDo: Find a way to give feedback to submitter of the flag
+# ToDo: Require password for sending of flags (prevent other users removing points from others)
 
 parser = argparse.ArgumentParser(description='Server listening for flags')
 parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug, info, or warning')

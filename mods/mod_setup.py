@@ -11,6 +11,8 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
+# ToDo: Create user/salt database
+
 def setupDatabase(database):    # Set up sqlite database with appropriate tables and columns
 
     import sqlite3
@@ -21,43 +23,37 @@ def setupDatabase(database):    # Set up sqlite database with appropriate tables
             conn = sqlite3.connect('database/' + database)    # Setup connection to database
         except Exception, e:
             logger.info(e)
-
         try:
             logger.info("Database open: {0}".format(database))    # Log to info what database was open
         except Exception, e:
             logger.info(e)
-
         try:
             # Create user_points table for tracking of users total points
             conn.execute('''CREATE TABLE user_points (uname VARCHAR(32) NOT NULL, tot_points INT);''')
         except Exception, e:
             logger.info(e)
-
         try:
             # Create user_flags table to track all flags found by user
             conn.execute('''CREATE TABLE user_flags (uname VARCHAR(32) NOT NULL, uuid VARCHAR(37));''')
         except Exception, e:
             logger.info(e)
-
         try:
             # Create user_messages table to track all messages by user
             conn.execute('''CREATE TABLE user_messages (uname VARCHAR(32) NOT NULL, message VARCHAR(255));''')
         except Exception, e:
             logger.info(e)
-
         try:
             # Create flags tables to track flags uuid, name, whether or not it's venomous and points
             conn.execute('''CREATE TABLE flags (flagname VARCHAR(32), uuid VARCHAR(37) NOT NULL, points INT NOT NULL, venomous BOOLEAN DEFAULT 0);''')
         except Exception, e:
             logger.info(e)
-
         try:
             # Create users table for storing of users passwords
             conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(32) NOT NULL);''')
         except Exception, e:
             logger.info(e)
 
-        logger.info("tables created in {0}".format(database))    # Log to informational the completion of table creation
+        logger.info("Tables created in {0}".format(database))    # Log to informational the completion of table creation
 
         try:
             conn.commit()    # Commit all changes
@@ -72,12 +68,12 @@ def setupDatabase(database):    # Set up sqlite database with appropriate tables
             logger.info(e)
 
 def generate_RSA(bits=2048):
-
     '''
     Generate an RSA keypair with an exponent of 65537 in PEM format
     param: bits The key length in bits
     Return private key and public key
     '''
+
     from Crypto.PublicKey import RSA
 
     try:
