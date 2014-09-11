@@ -9,9 +9,7 @@ import argparse
 import os
 import mods.mod_collector as collector_def
 
-#ToDo: Create logic for user to submit flag only once (Should be completed check_if_exists function)
-#ToDo: Create function to validate flag exists (Should be completed check_if_uuid_exists function)
-#ToDo: Create function to validate user exists (Should be completed check_if_userflag_exists function)
+# ToDo: Find a way to give feedback to submitter of the flag
 
 parser = argparse.ArgumentParser(description='Server listening for flags')
 parser.add_argument('-l', '--loglevel', help='Logging level - followed by debug, info, or warning')
@@ -84,14 +82,22 @@ if __name__ == "__main__":
                 try:
                     #In Windows, sometimes when a TCP program closes abruptly,
                     # a "Connection reset by peer" exception will be thrown
-                    encryptedData = sock.recv(RECV_BUFFER).rstrip('\n\r')    # Receive the encrypted package
-                    data = collector_def.decrypt_RSA(privateKey, encryptedData)    # Decrypt and assign to data variable
+                    try:
+                        encryptedData = sock.recv(RECV_BUFFER).rstrip('\n\r')    # Receive the encrypted package
+                    except Exception, e:
+                        logger.info(e)
+
+                    try:
+                        data = collector_def.decrypt_RSA(privateKey, encryptedData)    # Decrypt and assign to data variable
+                    except Exception, e:
+                        logger.info(e)
+
                     if data:    # If data exists
                         try:
                             logData = data.rstrip('\n\r')
+                            logger.info("Client %s %s sent: " % addr, logData)    # Log to info
                         except Exception, e:
                             logger.info(e)
-                            logger.info("Client %s %s sent: " % addr + logData)    # Log to info
                         if ',' in logData:    # Validate proper string structure exists
                             try:
                                 username, flag, message  = data.split(",")    # Split up the string to variables for insert
@@ -127,11 +133,11 @@ if __name__ == "__main__":
                                             except Exception, e:
                                                 logger.info(e)
                                         else:
-                                            logger.info("%s username doesn't exist" % username)
+                                            logger.info("%s username doesn't exist. Sent by %s." % username, addr)
                                     else:
-                                        logger.info("%s flag doesn't exist" % flag)
+                                        logger.info("%s flag doesn't exist. Sent by %s." % username, addr)
                                 else:
-                                    logger.info("%s has submitted more than once" % username) # ToDo: Find a way to give this back to the user
+                                    logger.info("%s username submitted more than once. Sent by %s." % username, addr)
                             else:
                                 logger.info("No database available")    # Warn that database does not exist
                                 print('Run setup.py first')    # Print next steps if not
