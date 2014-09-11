@@ -19,6 +19,10 @@ def setupDatabase(database):    # Set up sqlite database with appropriate tables
     if not os.path.isfile(os.path.realpath('database/' + database)):    # Only do this if it does not exist
         try:
             conn = sqlite3.connect('database/' + database)    # Setup connection to database
+        except Exception, e:
+            logger.info(e)
+
+        try:
             logger.info("Database open: {0}".format(database))    # Log to info what database was open
         except Exception, e:
             logger.info(e)
