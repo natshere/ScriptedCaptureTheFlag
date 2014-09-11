@@ -2,6 +2,7 @@ __author__ = 'tom'
 
 import uuid
 import argparse
+import logging
 import mods.mod_createflag as create_flag_def
 
 parser = argparse.ArgumentParser(description='Used to create flags')
@@ -13,12 +14,34 @@ parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no
 
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
 
-if __name__ == "__main__":
-    args = vars(parser.parse_args())    # Assign arguments to args variable
+current_directory = os.getcwd()
+logger = logging.getLogger('ctfCollector')
+hdlr = logging.FileHandler(current_directory + '/log/setup.log')
+formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
+hdlr.setFormatter(formatter)
+logger.addHandler(hdlr)
+logger.setLevel(logging.INFO)
 
-    flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
-    flagname = args['name']
-    ipaddress = args['ipaddress']
+if __name__ == "__main__":
+    try:
+        args = vars(parser.parse_args())    # Assign arguments to args variable
+    except Exception, e:
+        logger.inf(e)
+
+    try:
+        flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
+    except Exception, e:
+        logger.inf(e)
+
+    try:
+        flagname = args['name']
+    except Exception, e:
+        logger.inf(e)
+
+    try:
+        ipaddress = args['ipaddress']
+    except Exception, e:
+        logger.inf(e)
 
     if create_flag_def.check_if_flagname_exists(flagname):    # Check if flag name already exists, ask user for new one if does
         print "Flag name already exists, please select a new one: ",
