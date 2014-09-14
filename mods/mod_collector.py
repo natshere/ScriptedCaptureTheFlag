@@ -47,28 +47,6 @@ def check_if_uuid_exists(uuid):    # Check if flag exists
 
     return returnvalue[0]
 
-def check_if_user_exists(username):
-
-    import sqlite3
-
-    try:
-        conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
-        c = conn.cursor()
-    except Exception, e:
-        logger.info(e)
-
-    try:
-        c.execute('''SELECT EXISTS(SELECT * FROM users WHERE uname = ?)''', (username,))    # Check if user exists
-    except Exception, e:
-        logger.info(e)
-
-    try:
-        returnvalue = c.fetchone()
-    except Exception, e:
-        logger.info(e)
-
-    return returnvalue[0]
-
 def check_if_user_exists_points(username):
 
     import sqlite3

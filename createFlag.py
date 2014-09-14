@@ -17,7 +17,7 @@ parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no
 
 current_directory = os.getcwd()
 logger = logging.getLogger('ctfCollector')
-hdlr = logging.FileHandler(current_directory + '/log/setup.log')
+hdlr = logging.FileHandler(current_directory + '/log/creatFlag.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)

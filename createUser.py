@@ -1,7 +1,6 @@
 __author__ = 'tom'
 
 import argparse
-import sqlite3
 import logging
 import os
 import mods.mod_create_user as create_user_def
@@ -37,6 +36,21 @@ if __name__ == "__main__":
                 username = args['user']
             except Exception, e:
                 logger.inf(e)
+
+            try:
+                username_available = global_def.check_if_user_exists(username)
+            except Exception, e:
+                logger.info(e)
+
+            try:
+                while username_available != 0:
+                    try:
+                        username = raw_input('Username already exists. Please enter new username: ')
+                        username_available = global_def.check_if_user_exists(username)
+                    except Exception, e:
+                        logger.info(e)
+            except Exception, e:
+                logger.info(e)
 
             try:
                 confirm_password = raw_input('Please re-enter password: ')

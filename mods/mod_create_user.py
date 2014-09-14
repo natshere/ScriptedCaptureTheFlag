@@ -13,7 +13,7 @@ logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
 def insert_user_points(username, database):
-    # ToDo: Logic to make sure user doesn't already exist
+
     initial_points = 0
     try:
         conn = sqlite3.connect('database/' + database)    # Setup connection to database
@@ -37,7 +37,7 @@ def insert_user_points(username, database):
         logger.info(e)
 
 def insert_user_hash(username, hashed_password, database):
-    # ToDo: Logic to make sure user doesn't already exist
+
     try:
         conn = sqlite3.connect('database/' + database)    # Setup connection to database
         logger.info("Database open: {0}".format(database))    # Log to info what database was open
@@ -60,7 +60,7 @@ def insert_user_hash(username, hashed_password, database):
         logger.info(e)
 
 def insert_user_salt(username, salt, database):
-    # ToDo: Logic to make sure user doesn't already exist
+
     try:
         conn = sqlite3.connect('database/' + database)    # Setup connection to database
         logger.info("Database open: {0}".format(database))    # Log to info what database was open
