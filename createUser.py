@@ -8,7 +8,7 @@ import mods.mod_global as global_def
 
 database = 'ctfCollector.db'
 
-parser = argparse.ArgumentParser(description='Used to create flags')
+parser = argparse.ArgumentParser(description='Used to create user')
 parser.add_argument('-u', '--user', help='Enter username', required=True)
 parser.add_argument('-p', '--password', help='Enter password', required=True)
 

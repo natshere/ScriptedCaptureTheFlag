@@ -64,7 +64,7 @@ Required:
 Usage:
 
 ```
-Used to create flags
+Used to create user
 
 optional arguments:
   -h, --help            show this help message and exit
