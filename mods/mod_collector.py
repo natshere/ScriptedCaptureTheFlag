@@ -60,7 +60,7 @@ def check_if_user_exists_points(username):
     try:
         c.execute('''SELECT EXISTS(SELECT * FROM user_points WHERE uname = ?)''', (username,))    # Check if user exists
     except Exception, e:
-        logger.info("SELECT EXISTS FROM user_points: {0}".format(e))"
+        logger.info("SELECT EXISTS FROM user_points: {0}".format(e))
 
     try:
         returnvalue = c.fetchone()
