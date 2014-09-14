@@ -79,6 +79,23 @@ optional arguments:
   -u, --justuuid        Enter to create just a uuid and no script
 ```
 
+### createUser.py
+This script will a user.
+
+Required:
+```python createUser.py -u USERNAME -p PASSWORD```
+
+Usage:
+
+'''
+Used to create flags
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -u USER, --user USER  Enter username
+  -p PASSWORD, --password PASSWORD
+                        Enter password
+
 ToDo's
 =====
 
