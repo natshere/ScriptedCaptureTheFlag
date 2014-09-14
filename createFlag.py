@@ -14,6 +14,7 @@ parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or 
 parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no script', action='store_true')
 
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
+#ToDo: Give option for creating Windows Executable flag
 
 current_directory = os.getcwd()
 logger = logging.getLogger('ctfCollector')

@@ -93,6 +93,7 @@ ToDo's
 
 ### createFlag.py
 * ToDo: Add randomized encoded function for 'Poisoned Flags'
+* ToDo: Give option for creating Windows Executable flag
 * ~~ToDo: Fix venomous flag to just require to be added, no argument required~~
 * ~~ToDo: Add option to include ctfCollector IP address~~
 * ~~ToDo: Check if uuid exists, if exists create new uuid automatically~~ (Should be completed with check_if_uuid_exists)
