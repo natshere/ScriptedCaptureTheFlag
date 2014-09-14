@@ -202,3 +202,7 @@
 2014-09-13 22:19:41,666 INFO INSERT INTO users_salt(uname, salt) VALUES(testuser3, SlViS5mahOA7u8E8TI1Bbg==)
 2014-09-13 22:19:41,666 INFO Commit Completed
 2014-09-13 22:19:41,667 INFO Connection to database closed
+2014-09-13 23:02:00,695 INFO Call to test_logger: test_logger() takes exactly 1 argument (0 given)
+2014-09-13 23:07:44,760 INFO 'module' object has no attribute 'loglevel'
+2014-09-13 23:07:45,526 INFO Using database: ctfCollector.db
+2014-09-13 23:37:52,705 INFO Using database: ctfCollector.db
