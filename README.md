@@ -24,36 +24,12 @@ Setup needs to be ran first. This script creates the database, sets up the table
 Simply run:
 ```python setup.py```
 
-Usage:
-```
-usage: setup.py [-h] [-l LOGLEVEL]
-
-Server listening for flags
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -l LOGLEVEL, --loglevel LOGLEVEL
-                        Logging level - followed by debug, info, or warning
-```
-
 ### ctfCollector.py
 CTFCollector is the listener. This script listens on designated port for incoming connections from flag entries. This
  script will also update the tables as flag entries come in. Currently set to accept 10 threads.
 
 Simply run:
 ```python ctfCollector.py```
-
-Usage:
-```
-usage: ctfCollector.py [-h] [-l LOGLEVEL]
-
-Server listening for flags
-
-optional arguments:
-  -h, --help            show this help message and exit
-  -l LOGLEVEL, --loglevel LOGLEVEL
-                        Logging level - followed by debug, info, or warning
-```
 
 ### createFlag.py
 This script will create the flag. The flag can be a script or just a UUID. Flag creators must provide a name and number 
