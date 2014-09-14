@@ -4,6 +4,8 @@ import mods.mod_setup as setup_def
 import logging
 import os
 
+# ToDo: If database exists ask to overwrite
+
 current_directory = os.getcwd()
 logger = logging.getLogger('ctfCollector')
 hdlr = logging.FileHandler(current_directory + '/log/setup.log')
