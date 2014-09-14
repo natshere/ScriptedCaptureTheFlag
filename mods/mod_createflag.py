@@ -18,22 +18,22 @@ def check_if_flagname_exists(flagname):    # Check if user has already submitted
     try:
         conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
     except Exception, e:
-        logger.inf("Create connection to database: {0}".format(e))
+        logger.info("Create connection to database: {0}".format(e))
 
     try:
         c = conn.cursor()
     except Exception, e:
-        logger.inf("Setup cursor: {0}".format(e))
+        logger.info("Setup cursor: {0}".format(e))
 
     try:
         c.execute('''SELECT EXISTS(SELECT * FROM flags WHERE flagname = ?)''', (flagname,))    # Check if user exists
     except Exception, e:
-        logger.inf("SELECT EXISTS for flag: {0}".format(e))
+        logger.info("SELECT EXISTS for flag: {0}".format(e))
 
     try:
         returnvalue = c.fetchone()
     except Exception, e:
-        logger.inf("Fetch results of SELECT: {0}".format(e))
+        logger.info("Fetch results of SELECT: {0}".format(e))
 
     return returnvalue[0]
 
@@ -44,22 +44,22 @@ def check_if_uuid_exists(createduuid):    # Check if user has already submitted
     try:
         conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
     except Exception, e:
-        logger.inf("Setup connection to database: {0}".format(e))
+        logger.info("Setup connection to database: {0}".format(e))
 
     try:
         c = conn.cursor()
     except Exception, e:
-        logger.inf("Setup cursor: {0}".format(e))
+        logger.info("Setup cursor: {0}".format(e))
 
     try:
         c.execute('''SELECT EXISTS(SELECT * FROM flags WHERE uuid = "''' + str(createduuid) + '''")''')    # Check if uuid exists
     except Exception, e:
-        logger.inf("SELECT EXISTS for flag: {0}".format(e))
+        logger.info("SELECT EXISTS for flag: {0}".format(e))
 
     try:
         returnvalue = c.fetchone()
     except Exception, e:
-        logger.inf("Fetch results of SELECT: {0}".format(e))
+        logger.info("Fetch results of SELECT: {0}".format(e))
 
     return returnvalue[0]
 
@@ -126,32 +126,32 @@ if __name__ == "__main__":
     try:
         script_encryption = script_encryption.format(pub_key)
     except Exception, e:
-        logger.inf("Insert pub_key into string: {0}".format(e))
+        logger.info("Insert pub_key into string: {0}".format(e))
 
     try:
         script_part = script_main.format(flag_uuid, ipaddress)    # Insert the variable public key and uuid (unique to each flag)
     except Exception, e:
-        logger.inf("Insert flag_uuid and ipaddress into string: {0}".format(e))
+        logger.info("Insert flag_uuid and ipaddress into string: {0}".format(e))
 
     try:
         full_script = script_argparse + script_encryption + script_part    # Tie string (script) together
     except Exception, e:
-        logger.inf("Combine variables to create script: {0}".format(e))
+        logger.info("Combine variables to create script: {0}".format(e))
 
     try:
         f = open(flag_name + '.py', 'w')    # Open script (named by user) for writing
     except Exception, e:
-        logger.inf("Open flag_name for writing: {0}".format(e))
+        logger.info("Open flag_name for writing: {0}".format(e))
 
     try:
         f.write(full_script)    # Write script to file
     except Exception, e:
-        logger.inf("Write fulld_script to file: {0}".format(e))
+        logger.info("Write fulld_script to file: {0}".format(e))
 
     try:
         f.close()    # Close the file
     except Exception, e:
-        logger.inf("Close the file: {0}".format(e))
+        logger.info("Close the file: {0}".format(e))
 
 def update_uuid_db(flagname, newuuid, numpoints, venomous):     # Insert flag information into database
 
@@ -164,33 +164,33 @@ def update_uuid_db(flagname, newuuid, numpoints, venomous):     # Insert flag in
                 conn = sqlite3.connect('database/ctfCollector.db')    # Set up connection to database
                 logging.info("Connection setup for ctfCollector.db")    # Log the connection setup to informational
             except Exception, e:
-                logger.inf("Create connection to database: {0}".format(e))
+                logger.info("Create connection to database: {0}".format(e))
 
             try:
                 c = conn.cursor()
                 # Insert flag name, uuid, worth points, and whether or not it's venomous
             except Exception, e:
-                logger.inf("Setup cursor: {0}".format(e))
+                logger.info("Setup cursor: {0}".format(e))
 
             try:
                 c.execute('''INSERT INTO flags VALUES (?,?,?,?)''', (flagname, newuuid, numpoints, venomous))
             except Exception, e:
-                logger.inf("INSERT INTO flags: {0}".format(e))
+                logger.info("INSERT INTO flags: {0}".format(e))
 
             try:
                 conn.commit()    # Commit changes
                 logging.info("Commit INSERT INTO flags VALUES ({0}, {1}, {2}, {3})".format(flagname, newuuid, numpoints, venomous))
             except Exception, e:
-                logger.inf("Commit INSERT INTO Flags: {0}".format(e))
+                logger.info("Commit INSERT INTO Flags: {0}".format(e))
 
             try:
                 conn.close()    # Close the connection
                 logging.info("Closing connection to database")    # Log the closure to informational
             except Exception, e:
-                logger.inf("Closing connection to database: {0}".format(e))
+                logger.info("Closing connection to database: {0}".format(e))
 
         else:
             logger.info('There is a problem with the database. Delete and restart')
             print('There is a problem with the database. Delete and restart')    # Make some recommendations, this shouldn't happen
     except Exception, e:
-        logger.inf("Check if database exists: {0}".format(e))
+        logger.info("Check if database exists: {0}".format(e))
