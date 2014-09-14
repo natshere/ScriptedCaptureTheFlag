@@ -136,7 +136,7 @@ ToDo's
 
 ### All
 * ToDo: Clean/Optimize script
-* ToDo: Create front-end for interacting with scripts and tracking of player scores.
+* ToDo: Create front-end for interacting with scripts, tracking of player scores, and adding UUIDs.
 * ~~ToDo: When user is created, update user_points table with 0 points~~
 * ~~ToDo: Ensure adequate comments~~
 * ~~ToDo: Add more exception handling~~
