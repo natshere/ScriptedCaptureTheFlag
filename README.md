@@ -82,6 +82,7 @@ ToDo's
 * ~~ToDo: Insert salt into salt database~~
 
 ### ctfCollector.py
+* ToDo: Find a way to give feedback to submitter of the flag
 * ~~ToDo: pull salt from salt database~~
 * ~~ToDo: pull hashed password from user database~~
 * ~~ToDo: Interact with user_messages table - update with new messages by users~~

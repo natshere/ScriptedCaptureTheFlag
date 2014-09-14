@@ -11,8 +11,6 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
-# ToDo: Create user/salt database
-
 def setupDatabase(database):    # Set up sqlite database with appropriate tables and columns
 
     import sqlite3
