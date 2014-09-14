@@ -4,7 +4,8 @@ import argparse
 import sqlite3
 import logging
 import os
-import hashlib
+import mods.mod_create_user as create_user_def
+import mods.mod_global as global_def
 
 database = 'ctfCollector.db'
 
@@ -14,90 +15,68 @@ parser.add_argument('-p', '--password', help='Enter password', required=True)
 
 current_directory = os.getcwd()
 logger = logging.getLogger('ctfCollector')
-hdlr = logging.FileHandler(current_directory + '/log/setup.log')
+hdlr = logging.FileHandler(current_directory + '/log/createusers.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
-def create_hash_passwd(password):
-    # ToDo: Insert hashed password into user database
-    # ToDo: Insert salt into salt database
 
-    import hashlib
-    import os
+if __name__ == "__main__":
+    database = 'ctfCollector.db'
 
-    salt = os.urandom(16)
+    try:
+        if os.path.isfile(os.path.realpath('database/' + database)):    # Only do this if it does not exist
 
-    m = hashlib.md5()
-    m.update(salt + password)
-    salted_password = m.hexdigest()
+            try:
+                args = vars(parser.parse_args())    # Assign arguments to args variable
+            except Exception, e:
+                logger.inf(e)
 
-    return salt,salted_password
+            try:
+                username = args['user']
+            except Exception, e:
+                logger.inf(e)
 
-try:
-    if os.path.isfile(os.path.realpath('database/' + database)):    # Only do this if it does not exist
+            try:
+                confirm_password = raw_input('Please re-enter password: ')
+            except Exception, e:
+                logger.info(e)
 
-        initial_points = 0
+            try:
+                while confirm_password != args['password']:
+                    try:
+                        confirm_password = raw_input('Password does not match. Please re-enter password: ')
+                    except Exception, e:
+                        logger.info(e)
+            except Exception, e:
+                logger.info(e)
 
-        try:
-            args = vars(parser.parse_args())    # Assign arguments to args variable
-        except Exception, e:
-            logger.inf(e)
-
-        try:
-            username = args['user']
-        except Exception, e:
-            logger.inf(e)
-
-        try:
-            confirm_password = raw_input('Please re-enter password')
-        except Exception, e:
-            logger.info(e)
-
-        try:
-            while confirm_password != args['password']:
-                try:
-                    confirm_password = raw_input('Password does not match. Please re-enter password')
-                except Exception, e:
-                    logger.info(e)
-        except Exception, e:
-            logger.info(e)
-
-        try:
-            salt_hash = create_hash_passwd(confirm_password)
-            salt = salt_hash[0]
-            hashed_password = salt_hash[1]
-        except Exception, e:
-            logger.info(e)
-
-        try:
-            conn = sqlite3.connect('database/' + database)    # Setup connection to database
-            logger.info("Database open: {0}".format(database))    # Log to info what database was open
-        except Exception, e:
-            logger.info(e)
-
-        try:
-            # ToDo: Logic to make sure user doesn't already exist
-            conn.execute('''INSERT INTO user_points(uname, tot_points) VALUES(?,?)''', (username, initial_points)) # UDJUST TO ADD USER
-        except Exception, e:
-            logger.info(e)
-
-        try:
-            # ToDo: Logic to make sure user doesn't already exist
-            conn.execute('''INSERT INTO users(uname, password)''', (username, hashed_password))
-        except Exception, e:
-            logger.info(e)
-
-        try:
-            # ToDo: Logic to make sure user doesn't already exist
-            conn.execute('''INSERT INTO users_salt(uname, salt)''', (username, salt))
-        except Exception, e:
-            logger.info(e)
-
-    else:
-        print ('Database does not exist. Please run setup.py')
-        logger.info('Database does not exist. Please run setup.py')
-        exit()
-except Exception, e:
-    logger.info(e)
+            try:
+                salt = global_def.create_salt()
+            except Exception, e:
+                logger.info(e)
+            try:
+                salt_hash = global_def.create_hash_passwd(confirm_password,salt)
+                salt = salt_hash[1]
+                hashed_password = salt_hash[0]
+            except Exception, e:
+                logger.info(e)
+            try:
+                create_user_def.insert_user_points(username, database)
+            except Exception, e:
+                logger.info(e)
+            try:
+                create_user_def.insert_user_hash(username,hashed_password, database)
+            except Exception, e:
+                logger.info(e)
+            try:
+                create_user_def.insert_user_salt(username, salt, database)
+            except Exception, e:
+                logger.info(e)
+        else:
+            print ('Database does not exist. Please run setup.py')
+            logger.info('Database does not exist. Please run setup.py')
+            exit()
+    except Exception, e:
+        logger.info(e)

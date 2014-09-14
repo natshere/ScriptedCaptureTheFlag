@@ -27,7 +27,7 @@ if __name__ == "__main__":
     try:
         args = vars(parser.parse_args())    # Assign arguments to args variable
     except Exception, e:
-        logger.inf(e)
+        logger.info(e)
 
     try:
         flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
@@ -37,27 +37,27 @@ if __name__ == "__main__":
     try:
         flagname = args['name']
     except Exception, e:
-        logger.inf(e)
+        logger.info(e)
 
     try:
         ipaddress = args['ipaddress']
     except Exception, e:
-        logger.inf(e)
+        logger.info(e)
 
     try:
         if create_flag_def.check_if_flagname_exists(flagname):    # Check if flag name already exists, ask user for new one if does
             print "Flag name already exists, please select a new one: ",
             flagname = raw_input()
     except Exception, e:
-        logger.inf(e)
+        logger.info(e)
     try:
         if create_flag_def.check_if_uuid_exists(flagUUID):
             try:
                 flagUUID = uuid.uuid4()    # Create new uuid and assign to variable
             except Exception, e:
-                logger.inf(e)
+                logger.info(e)
     except Exception, e:
-        logger.inf(e)
+        logger.info(e)
 
     try:
         if not args['justuuid']:
@@ -65,25 +65,25 @@ if __name__ == "__main__":
             try:
                 pubKey = open(public_key_loc, "r").read()    # Feed the key to variable for writing
             except Exception, e:
-                logger.inf(e)
+                logger.info(e)
 
             try:
                 create_flag_def.createFlag(flagname, pubKey, flagUUID, ipaddress)    # Create the new flag
             except Exception, e:
-                logger.inf(e)
+                logger.info(e)
 
             try:
                 create_flag_def.update_uuid_db(flagname, str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
             except Exception, e:
-                logger.inf(e)
+                logger.info(e)
         else:
             try:
                 print "New Flag UUID: " + str(flagUUID)
             except Exception, e:
-                logger.inf(e)
+                logger.info(e)
             try:
                 create_flag_def.update_uuid_db(flagname, str(flagUUID), int(args['points']), args['venomous'])    # Update the database with the information
             except Exception, e:
-                logger.inf(e)
+                logger.info(e)
     except Exception, e:
-        logger.inf(e)
+        logger.info(e)

@@ -72,6 +72,7 @@ import argparse
 
 parser = argparse.ArgumentParser(description='Used to prove access and add points')
 parser.add_argument('-u','--username', help='Include your username for adding points', required=True)
+parser.add_argument('-p', '--password', help='Enter password', required=True)
 parser.add_argument('-m','--message', help='Include message to be displayed on scoreboard. Must be encapsulated by quotes'
                     , required=False)
 
@@ -108,10 +109,15 @@ if __name__ == "__main__":
     else:
         message = args['message']
 
+    try:
+        password = args['password']
+    except Exception, e:
+        logger.info(e)
+
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.connect((HOST,PORT))
 
-    command = username + ',' + uuid + ',' + message
+    command = username + ',' + uuid + ',' + message + ',' + password
 
     encryptedCommand = encrypt_RSA(command)
     s.send(encryptedCommand)

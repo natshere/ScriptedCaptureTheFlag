@@ -102,6 +102,26 @@ def checkdatabase(database):    # Validate the database exists in the correct di
         logger.info(e)
 
 
+# def decrypt_RSA(private_key_loc, package):
+#     '''
+#     param: public_key_loc Path to your private key
+#     param: package String to be decrypted
+#     return decrypted string
+#     '''
+#     from base64 import b64decode
+#     from M2Crypto import BIO, RSA
+#     print 'Working 1'
+#     key = open(private_key_loc, "r").read()
+#     print 'Working 2'
+#     priv_key = BIO.MemoryBuffer(key.encode('utf8'))
+#     print 'Working 3'
+#     key = RSA.load_key_bio(priv_key)
+#     print 'Working 4'
+#     decrypted = key.private_decrypt(b64decode(package), RSA.pkcs1_oaep_padding)
+#     print 'Working 5'
+#     return decrypted
+
+
 def decrypt_RSA(private_key_loc, package):
 
     '''
@@ -128,22 +148,13 @@ def decrypt_RSA(private_key_loc, package):
         rsakey = PKCS1_OAEP.new(rsakey)
     except Exception, e:
         logger.info(e)
-
+    decrypted = ''
     try:
         decrypted = rsakey.decrypt(b64decode(package))
     except Exception, e:
         logger.info(e)
 
     return decrypted
-
-def sanitize(table_name):    # On standby for the need to scrub sql input
-
-    try:
-        clean_table_name = ''.join( chr for chr in table_name if chr.isalnum() )    # Return string with only allow alphanumeric characters
-    except Exception, e:
-        logger.info(e)
-
-    return clean_table_name
 
 def update_user_flag(username, flag):    # Add flag to the user - used to allow only one time use of flags
 

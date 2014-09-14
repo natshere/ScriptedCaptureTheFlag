@@ -8,6 +8,7 @@ import logging
 import argparse
 import os
 import mods.mod_collector as collector_def
+import mods.mod_global as global_def
 
 # ToDo: Find a way to give feedback to submitter of the flag
 # ToDo: Require password for sending of flags (prevent other users removing points from others)
@@ -81,6 +82,7 @@ if __name__ == "__main__":
             else:
                 # Data received from client, process it
                 try:
+                    data = ''
                     #In Windows, sometimes when a TCP program closes abruptly,
                     # a "Connection reset by peer" exception will be thrown
                     try:
@@ -88,20 +90,21 @@ if __name__ == "__main__":
                     except Exception, e:
                         logger.info(e)
 
-                    try:
-                        data = collector_def.decrypt_RSA(privateKey, encryptedData)    # Decrypt and assign to data variable
-                    except Exception, e:
-                        logger.info(e)
-
-                    if data:    # If data exists
+                    if encryptedData != '':    # If data exists
+                        logData = ''
                         try:
-                            logData = data.rstrip('\n\r')
-                            logger.info("Client %s %s sent: " % addr, logData)    # Log to info
+                            new_encryptedData = encryptedData.rstrip('\r\n')
+                            data = collector_def.decrypt_RSA(privateKey, new_encryptedData)    # Decrypt and assign to data variable
                         except Exception, e:
                             logger.info(e)
-                        if ',' in logData:    # Validate proper string structure exists
+                        try:
+                            logData = data.rstrip('\n\r')
+                            logger.info("Client {0} sent: {1}".format(addr, logData))    # Log to info
+                        except Exception, e:
+                            logger.info(e)
+                        if ',' in data:    # Validate proper string structure exists
                             try:
-                                username, flag, message  = data.split(",")    # Split up the string to variables for insert
+                                username, flag, message, password  = data.split(",")    # Split up the string to variables for insert
                             except Exception, e:
                                 logger.info(e)
                             if os.path.isfile(os.path.realpath(current_directory + '/database/ctfCollector.db')):    # Validate database exists
@@ -116,29 +119,33 @@ if __name__ == "__main__":
                                     except Exception, e:
                                         logger.info(e)
                                     if uuid_exists:
-                                        try:
-                                           user_exists = collector_def.check_if_user_exists(username)
-                                        except Exception, e:
-                                            logger.info(e)
-                                        if user_exists:
+                                        uname_passwd = global_def.validate_password(username,password)
+                                        if uname_passwd:
                                             try:
-                                                collector_def.update_user_flag(username, flag)    # Update user_flag database
+                                               user_exists = collector_def.check_if_user_exists(username)
                                             except Exception, e:
                                                 logger.info(e)
-                                            try:
-                                                collector_def.update_user_score(username, flag)    # Update users score (venomous = subtract)
-                                            except Exception, e:
-                                                logger.info(e)
-                                            try:
-                                                collector_def.user_message_update(username, message)    # Update user messages table with message
-                                            except Exception, e:
-                                                logger.info(e)
+                                            if user_exists:
+                                                try:
+                                                    collector_def.update_user_flag(username, flag)    # Update user_flag database
+                                                except Exception, e:
+                                                    logger.info(e)
+                                                try:
+                                                    collector_def.update_user_score(username, flag)    # Update users score (venomous = subtract)
+                                                except Exception, e:
+                                                    logger.info(e)
+                                                try:
+                                                    collector_def.user_message_update(username, message)    # Update user messages table with message
+                                                except Exception, e:
+                                                    logger.info(e)
+                                            else:
+                                                logger.info("{0} username doesn't exist. Sent by {1}.".format(username, addr))
                                         else:
-                                            logger.info("%s username doesn't exist. Sent by %s." % username, addr)
+                                            logger.info("{0} username and password do not match.".format(username))
                                     else:
-                                        logger.info("%s flag doesn't exist. Sent by %s." % username, addr)
+                                        logger.info("{0} flag doesn't exist. Sent by {1}.".format(username, addr))
                                 else:
-                                    logger.info("%s username submitted more than once. Sent by %s." % username, addr)
+                                    logger.info("{0} username submitted more than once. Sent by {1}.".format(username, addr))
                             else:
                                 logger.info("No database available")    # Warn that database does not exist
                                 print('Run setup.py first')    # Print next steps if not
