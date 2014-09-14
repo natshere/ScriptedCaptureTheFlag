@@ -15,6 +15,7 @@ parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no
 
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
 #ToDo: Give option for creating Windows Executable flag
+#ToDo: Validate database exists
 
 current_directory = os.getcwd()
 logger = logging.getLogger('ctfCollector')
