@@ -14,7 +14,7 @@ parser.add_argument('-p', '--password', help='Enter password', required=True)
 
 current_directory = os.getcwd()
 logger = logging.getLogger('ctfCollector')
-hdlr = logging.FileHandler(current_directory + '/log/createusers.log')
+hdlr = logging.FileHandler(current_directory + '/log/createUser.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
