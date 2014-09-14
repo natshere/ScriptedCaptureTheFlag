@@ -63,7 +63,7 @@ Required:
 
 Usage:
 
-'''
+```
 Used to create flags
 
 optional arguments:
@@ -71,6 +71,7 @@ optional arguments:
   -u USER, --user USER  Enter username
   -p PASSWORD, --password PASSWORD
                         Enter password
+```
 
 ToDo's
 =====
