@@ -7,7 +7,7 @@ import os
 # ToDo: If database exists ask to overwrite
 
 current_directory = os.getcwd()
-logger = logging.getLogger('ctfCollector')
+logger = logging.getLogger('CTFsetup')
 hdlr = logging.FileHandler(current_directory + '/log/setup.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)

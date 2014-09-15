@@ -4,7 +4,7 @@ import os
 import logging
 
 current_directory = os.getcwd()
-logger = logging.getLogger('ctfCollector')
+logger = logging.getLogger('CTFcreateFlag')
 hdlr = logging.FileHandler(current_directory + '/log/createFlag.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
@@ -62,6 +62,32 @@ def check_if_uuid_exists(createduuid):    # Check if user has already submitted
         logger.info("Fetch results of SELECT: {0}".format(e))
 
     return returnvalue[0]
+
+def obfuscate_script(flag_name):
+
+    import subprocess
+    # Create and write obfuscated script
+
+    try:
+        obfuscated_script = subprocess.check_output(["mods/pyobfuscate", flag_name])
+    except Exception, e:
+        logger.info("Call to subprocess pyobfuscate: {0}".format(e))
+
+    try:
+        full_flag_name = flag_name + '.py'
+        f2 = open(flag_name, 'w')    # Open script (named by user) for writing
+    except Exception, e:
+        logger.info("Open flag_name obfuscated for writing: {0}".format(e))
+
+    try:
+        f2.write(obfuscated_script)    # Write script to file
+    except Exception, e:
+        logger.info("Write status variable to obfuscated file: {0}".format(e))
+
+    try:
+        f2.close()    # Close the file
+    except Exception, e:
+        logger.info("Close the obfuscated version of file: {0}".format(e))
 
 def createFlag(flag_name, pub_key, flag_uuid, ipaddress):    # Used to create the flag, requires flag name, public key, and uuid
 
@@ -139,19 +165,21 @@ if __name__ == "__main__":
         logger.info("Combine variables to create script: {0}".format(e))
 
     try:
-        f = open(flag_name + '.py', 'w')    # Open script (named by user) for writing
+        full_flag_name = flag_name + '.py'
+        f = open(full_flag_name, 'w')    # Open script (named by user) for writing
     except Exception, e:
-        logger.info("Open flag_name for writing: {0}".format(e))
+        logger.info("Open un-obsfucated flag_name for writing: {0}".format(e))
 
     try:
         f.write(full_script)    # Write script to file
     except Exception, e:
-        logger.info("Write fulld_script to file: {0}".format(e))
+        logger.info("Write un-obsfucated full_script to file: {0}".format(e))
 
     try:
         f.close()    # Close the file
     except Exception, e:
-        logger.info("Close the file: {0}".format(e))
+        logger.info("Close un-obsfucated version of script file: {0}".format(e))
+
 
 def update_uuid_db(flagname, newuuid, numpoints, venomous):     # Insert flag information into database
 

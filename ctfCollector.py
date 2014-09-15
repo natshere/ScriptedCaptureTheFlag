@@ -89,7 +89,7 @@ if __name__ == "__main__":
                             logger.info("Call to collector_def.decrypt_RSA: {0}".format(e))
                         try:
                             logData = data.rstrip('\n\r')
-                            logger.info("Client {0} sent: {1}".format(addr, logData))    # Log to info
+                            # logger.info("Client {0} sent: {1}".format(addr, logData))    # Should only use this one fail
                         except Exception, e:
                             logger.info("Remove new line from data: {0}".format(e))
                         if ',' in data:    # Validate proper string structure exists
@@ -114,25 +114,25 @@ if __name__ == "__main__":
                                         except Exception, e:
                                             logger.info("Call to global_def.validate_password: {0}".format(e))
                                         if uname_passwd:
+                                            # try:
+                                            #    user_exists = collector_def.check_if_user_exists(username)
+                                            # except Exception, e:
+                                            #     logger.info("Call to collector_def.check_if_user_exists: {0}".format(e))
+                                            # if user_exists:
                                             try:
-                                               user_exists = collector_def.check_if_user_exists(username)
+                                                collector_def.update_user_flag(username, flag)    # Update user_flag database
                                             except Exception, e:
-                                                logger.info("Call to collector_def.check_if_user_exists: {0}".format(e))
-                                            if user_exists:
-                                                try:
-                                                    collector_def.update_user_flag(username, flag)    # Update user_flag database
-                                                except Exception, e:
-                                                    logger.info("Call to collector_def.update_user_flag: {0}".format(e))
-                                                try:
-                                                    collector_def.update_user_score(username, flag)    # Update users score (venomous = subtract)
-                                                except Exception, e:
-                                                    logger.info("Call to collector_def.update_user_score: {0}".format(e))
-                                                try:
-                                                    collector_def.user_message_update(username, message)    # Update user messages table with message
-                                                except Exception, e:
-                                                    logger.info("Call to collector_def.user_message_update: {0}".format(e))
-                                            else:
-                                                logger.info("{0} username doesn't exist. Sent by {1}.".format(username, addr))
+                                                logger.info("Call to collector_def.update_user_flag: {0}".format(e))
+                                            try:
+                                                collector_def.update_user_score(username, flag)    # Update users score (venomous = subtract)
+                                            except Exception, e:
+                                                logger.info("Call to collector_def.update_user_score: {0}".format(e))
+                                            try:
+                                                collector_def.user_message_update(username, message)    # Update user messages table with message
+                                            except Exception, e:
+                                                logger.info("Call to collector_def.user_message_update: {0}".format(e))
+                                            # else:
+                                            #     logger.info("{0} username doesn't exist. Sent by {1}.".format(username, addr))
                                         else:
                                             logger.info("{0} username and password do not match.".format(username))
                                     else:

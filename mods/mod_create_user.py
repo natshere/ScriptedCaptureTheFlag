@@ -5,7 +5,7 @@ import os
 import sqlite3
 
 current_directory = os.getcwd()
-logger = logging.getLogger('ctfCollector')
+logger = logging.getLogger('CTFcreateUser')
 hdlr = logging.FileHandler(current_directory + '/log/createUser.log')
 formatter = logging.Formatter('%(asctime)s %(levelname)s %(message)s')
 hdlr.setFormatter(formatter)
