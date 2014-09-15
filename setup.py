@@ -16,37 +16,45 @@ logger.setLevel(logging.INFO)
 
 if __name__ == "__main__":
 
-    try:
-        setup_def.checkModules()    # Validate modules exist
-    except Exception, e:
-        logger.info("Call to setup_def.checkModules: {0}".format(e))
+    database = 'ctfCollector.db'
+    overwrite = 'no'
 
-    try:
-        setup_def.setupDatabase('ctfCollector.db')    # Setup the database
-    except Exception, e:
-        logger.info("Call to setup_def.setupDatabase: {0}".format(e))
+    if os.path.isfile(os.path.realpath('database/' + database)):    # Only do this if it does not exist
+        overwrite = raw_input("Database exists, would you like to overwrite? ")
+        overwrite = overwrite.lower()
 
-    try:
-        encryption = setup_def.generate_RSA()    # Generate public and private keys
-    except Exception, e:
-        logger.info("Call to setup_def.generate_RSA: {0}".format(e))
+    if not os.path.isfile(os.path.realpath('database/' + database)) or overwrite == "yes" or overwrite == 'y':
+        try:
+            setup_def.checkModules()    # Validate modules exist
+        except Exception, e:
+            logger.info("Call to setup_def.checkModules: {0}".format(e))
 
-    try:
-        f = open('keys/priv.key', 'w')    # Write private key
-    except Exception, e:
-        logger.info("Open priv.key for writing: {0}".format(e))
+        try:
+            setup_def.setupDatabase(database)    # Setup the database
+        except Exception, e:
+            logger.info("Call to setup_def.setupDatabase: {0}".format(e))
 
-    try:
-        f.write(encryption[0])
-    except Exception, e:
-        logger.info("Write the private key: {0}".format(e))
+        try:
+            encryption = setup_def.generate_RSA()    # Generate public and private keys
+        except Exception, e:
+            logger.info("Call to setup_def.generate_RSA: {0}".format(e))
 
-    try:
-        f = open('keys/pub.key', 'w')    # Write public key
-    except Exception, e:
-        logger.info("Open pub.key for writing: {0}".format(e))
+        try:
+            f = open('keys/priv.key', 'w')    # Write private key
+        except Exception, e:
+            logger.info("Open priv.key for writing: {0}".format(e))
 
-    try:
-        f.write(encryption[1])
-    except Exception, e:
-        logger.info("Write the public key: {0}".format(e))
+        try:
+            f.write(encryption[0])
+        except Exception, e:
+            logger.info("Write the private key: {0}".format(e))
+
+        try:
+            f = open('keys/pub.key', 'w')    # Write public key
+        except Exception, e:
+            logger.info("Open pub.key for writing: {0}".format(e))
+
+        try:
+            f.write(encryption[1])
+        except Exception, e:
+            logger.info("Write the public key: {0}".format(e))

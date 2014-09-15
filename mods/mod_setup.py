@@ -16,55 +16,55 @@ def setupDatabase(database):    # Set up sqlite database with appropriate tables
     import sqlite3
 
     logger.info("Using database: {0}".format(database))    # log to informational
-    if not os.path.isfile(os.path.realpath('database/' + database)):    # Only do this if it does not exist
-        try:
-            conn = sqlite3.connect('database/' + database)    # Setup connection to database
-        except Exception, e:
-            logger.info(e)
-        try:
-            # Create user_points table for tracking of users total points
-            conn.execute('''CREATE TABLE user_points (uname VARCHAR(32) NOT NULL, tot_points INT);''')
-        except Exception, e:
-            logger.info(e)
-        try:
-            # Create user_flags table to track all flags found by user
-            conn.execute('''CREATE TABLE user_flags (uname VARCHAR(32) NOT NULL, uuid VARCHAR(37));''')
-        except Exception, e:
-            logger.info(e)
-        try:
-            # Create user_messages table to track all messages by user
-            conn.execute('''CREATE TABLE user_messages (uname VARCHAR(32) NOT NULL, message VARCHAR(255));''')
-        except Exception, e:
-            logger.info(e)
-        try:
-            # Create flags tables to track flags uuid, name, whether or not it's venomous and points
-            conn.execute('''CREATE TABLE flags (flagname VARCHAR(32), uuid VARCHAR(37) NOT NULL, points INT NOT NULL, venomous BOOLEAN DEFAULT 0);''')
-        except Exception, e:
-            logger.info(e)
-        try:
-            # Create users table for storing of users passwords
-            conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(33) NOT NULL);''')
-        except Exception, e:
-            logger.info(e)
-        try:
-            # Create users_salt table for storing of users salt
-            conn.execute('''CREATE TABLE users_salt (uname VARCHAR(32) NOT NULL, salt VARCHAR(25) NOT NULL);''')
-        except Exception, e:
-            logger.info(e)
 
-        logger.info("Tables created in {0}".format(database))    # Log to informational the completion of table creation
+    try:
+        conn = sqlite3.connect('database/' + database)    # Setup connection to database
+    except Exception, e:
+        logger.info(e)
+    try:
+        # Create user_points table for tracking of users total points
+        conn.execute('''CREATE TABLE user_points (uname VARCHAR(32) NOT NULL, tot_points INT);''')
+    except Exception, e:
+        logger.info(e)
+    try:
+        # Create user_flags table to track all flags found by user
+        conn.execute('''CREATE TABLE user_flags (uname VARCHAR(32) NOT NULL, uuid VARCHAR(37));''')
+    except Exception, e:
+        logger.info(e)
+    try:
+        # Create user_messages table to track all messages by user
+        conn.execute('''CREATE TABLE user_messages (uname VARCHAR(32) NOT NULL, message VARCHAR(255));''')
+    except Exception, e:
+        logger.info(e)
+    try:
+        # Create flags tables to track flags uuid, name, whether or not it's venomous and points
+        conn.execute('''CREATE TABLE flags (flagname VARCHAR(32), uuid VARCHAR(37) NOT NULL, points INT NOT NULL, venomous BOOLEAN DEFAULT 0);''')
+    except Exception, e:
+        logger.info(e)
+    try:
+        # Create users table for storing of users passwords
+        conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(33) NOT NULL);''')
+    except Exception, e:
+        logger.info(e)
+    try:
+        # Create users_salt table for storing of users salt
+        conn.execute('''CREATE TABLE users_salt (uname VARCHAR(32) NOT NULL, salt VARCHAR(25) NOT NULL);''')
+    except Exception, e:
+        logger.info(e)
 
-        try:
-            conn.commit()    # Commit all changes
-            logger.info("Commit Completed")    # Log to informational the completion
-        except Exception, e:
-            logger.info(e)
+    logger.info("Tables created in {0}".format(database))    # Log to informational the completion of table creation
 
-        try:
-            conn.close()    # Close connection to database
-            logger.info("Connection to database closed")    # Log ot informational the closure of connection
-        except Exception, e:
-            logger.info(e)
+    try:
+        conn.commit()    # Commit all changes
+        logger.info("Commit Completed")    # Log to informational the completion
+    except Exception, e:
+        logger.info(e)
+
+    try:
+        conn.close()    # Close connection to database
+        logger.info("Connection to database closed")    # Log ot informational the closure of connection
+    except Exception, e:
+        logger.info(e)
 
 # def generate_RSA(bits=2048):
 #     '''
