@@ -1,10 +1,19 @@
 Capture The Flag
 ===========
 
-There will be two ways for players to submit flags to the score tracker: using the python script found or via the UI. 
-Flags can created via the `createFlag.py` script which will allow for naming and applying points. Just like in real 
-life, players should not be running any script he/she comes across. Some scripts will be 'venomous' to make the CTF 
-more interesting. Punishment (loss of points) will be applied to players that execute a destructive script.
+There is two ways for players to submit flags: using the python script found or via the UI (Not created yet). Flags can 
+created via the `createFlag.py` script which will allow for naming and applying points. Flags can be made 'venomous' by 
+the script maker. Just like in real life, players should not be running any script he/she comes across. This will should 
+make the CTF a bit more interesting by requiring a bit of code review before executing. Executing venomous flags result 
+in a punishment (loss of points) which will be applied to players that execute a the script.
+
+The `ctfCollectory.py` must be running to listen for flags. Users will only be allowed to submit a flag once. The user
+must also have an account. User accounts can be created with `creatUser.py`.
+
+Server keys are located in the keys directory. These keys are used to ensure sniffing of traffic doesn't give up unique 
+flag identifiers or passwords. They are created upon running `setup.py`. The setup script will also setup the database 
+with appropriate tables for tracking of flags and users password, salt, points, messages, and submitted flags. The 
+`setup.py` script must be ran first.
 
 This is my first pass at creating a unique, potentially more challenging, Capture The Flag. Please feel free to submit
 some idea's that are inline with the current theme of this CTF framework.
@@ -13,7 +22,6 @@ Requirements
 =====
 
 * m2crypto
-* pycrypto
 
 Usage
 =====
@@ -56,7 +64,7 @@ optional arguments:
 ```
 
 ### createUser.py
-This script will a user.
+This script will create a user.
 
 Required:
 ```python createUser.py -u USERNAME -p PASSWORD```
