@@ -16,7 +16,6 @@ parser.add_argument('-o', '--obfuscate', help='Obfuscate the flag script.', acti
 
 #ToDo: Add randomized encoded function for 'Poisoned Flags'
 #ToDo: Give option for creating Windows Executable flag
-#ToDo: Validate database exists
 
 current_directory = os.getcwd()
 logger = logging.getLogger('CTFcreateFlag')
