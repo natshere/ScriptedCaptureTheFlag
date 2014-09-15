@@ -98,7 +98,6 @@ if __name__ == "__main__":
                             except Exception, e:
                                 logger.info("Split the data by comma's: {0}".format(e))
                             if os.path.isfile(os.path.realpath(current_directory + '/database/ctfCollector.db')):    # Validate database exists
-                                # Not sure why 'not collector_def.check_if_userflag_... works - used just if
                                 try:
                                     user_flag_exists = collector_def.check_if_userflag_exists(flag, username)
                                 except Exception, e:
