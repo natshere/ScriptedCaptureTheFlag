@@ -43,7 +43,7 @@ def setupDatabase(database):    # Set up sqlite database with appropriate tables
         logger.info(e)
     try:
         # Create users table for storing of users passwords
-        conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(33) NOT NULL);''')
+        conn.execute('''CREATE TABLE users (uname VARCHAR(32) NOT NULL, password VARCHAR(33) NOT NULL, admin VARCHAR(5) NOT NULL);''')
     except Exception, e:
         logger.info(e)
     try:
