@@ -201,3 +201,38 @@ def validate_password(username, password):
     except Exception, e:
         logger.info("Validate hash_passwd and salted_password are the same: {0}".format(e))
     return answer
+
+def is_admin(username):
+    import sqlite3
+
+    try:
+        conn = sqlite3.connect('database/ctfCollector.db')    # Setup connection to sqlite database
+    except Exception, e:
+        logger.info("Setup connection to database: {0}".format(e))
+
+    try:
+        c = conn.cursor()
+    except Exception, e:
+        logger.info("Setup cursor: {0}".format(e))
+    try:
+        c.execute('''SELECT admin FROM users WHERE uname="''' + sanitize(username) + '''"''')
+    except Exception, e:
+        logger.info("SELECT admin: {0}".format(e))
+    try:
+        admin = c.fetchone()
+    except Exception, e:
+        logger.info("Fetch results from SELECT: {0}".format(e))
+
+    try:
+        conn.close()    # Close connection to sqlite database
+    except Exception, e:
+        logger.info("Clost connection to database: {0}".format(e))
+
+    try:
+        if admin is not None:
+            return admin
+        else:
+            return None
+            logger.info('Admin entry does not exist for user: %s' % username)
+    except Exception, e:
+        logger.info("Call to admin is not None: {0}".format(e))
