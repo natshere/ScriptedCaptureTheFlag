@@ -10,6 +10,7 @@ import time, datetime
 import Cookie
 import uuid
 import logging
+import mods.mod_global as global_def
 
 PORT_NUMBER = 7665
 
@@ -49,6 +50,19 @@ class myHandler(BaseHTTPRequestHandler):
 	    except Exception, e:
 	        logger.info("UPDATE user_points: {0}".format(e))
 
+	def login(self, error_message=''):
+		f = open('./login.html')
+		self.send_response(200)
+		self.send_header('Content-type', 'text/html')
+		self.end_headers()
+		content = f.read()
+		if error_message == '':
+			content = content.replace('{0}', '')
+		else:
+			content = content.replace('{0}', error_message)
+		self.wfile.write(content)
+		f.close()
+		return
 
 	def do_GET(self):
 		if not self.path == 'background.png' and not self.path == 'updateScores' and not self.path == 'login.html':
@@ -68,14 +82,7 @@ class myHandler(BaseHTTPRequestHandler):
 			return self.getCurrentScores()
 		
 		elif self.path == 'login.html':
-			self.path = 'serverFiles/login.html'
-			mimetype = 'text/html'
-			f = open(curdir + sep + self.path) 
-			self.send_response(200)
-			self.send_header('Content-type',mimetype)
-			self.end_headers()
-			self.wfile.write(f.read())
-			f.close()
+			self.login()
 		# Available js, css, and images are hard-coded paths
 		else:
 			self.path = 'serverFiles/background.png'
@@ -97,7 +104,17 @@ class myHandler(BaseHTTPRequestHandler):
 				environ={'REQUEST_METHOD':'POST',
 		                 'CONTENT_TYPE':self.headers['Content-Type'],
 			})
-			# perform login authentication and authorization
+			if global_def.validate_password(form['username'].value, form['password'].value):
+				self.path = 'serverFiles/admin.html'
+				mimetype = 'text/html'
+				f = open(curdir + sep + self.path) 
+				self.send_response(200)
+				self.send_header('Content-type',mimetype)
+				self.end_headers()
+				self.wfile.write(f.read())
+				f.close()
+			else:
+				self.login(error_message='Invalid login. Check your username and/or password')
 			return
 
 		elif self.path == '/admin':
