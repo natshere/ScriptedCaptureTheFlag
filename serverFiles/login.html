@@ -1,0 +1,63 @@
+<html>
+<head>
+	<title>CTF Admin Log-in</title>
+	<style>
+		body{
+			background-color: black;
+			margin:0;
+			height:100%;
+			width:100%;
+		}
+
+		#login{
+			position: absolute;
+			background-color: #515151;
+			height:70%;
+			width:70%;
+			top:15%;
+			left:15%;
+			text-align: center;
+		}
+		p{
+			color: white;
+		}
+		h1{
+			color: white;
+		}
+	</style>
+
+<script type="text/javascript">
+  function forgotPassword(){
+    var help = document.getElementById("error");
+    help.innerHTML = "<p class=\"mytext\">Forgot your password? Nothing to fix that right now....</p>"
+  }
+</script>
+</head>
+
+<body>
+	<div id="login">
+	<h1>CTF Log-In</h1><br>
+	<form method="post" action="login">
+    <p>
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username">
+    </p>
+
+    <p>
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password">
+    </p>
+
+    <p class="login-submit">
+      <button type="submit" class="login-button">Login</button>
+    </p>
+
+    <p><a href="javascript:forgotPassword()">Register / Forgot your password?</a></p>
+  </form>
+  <br>
+  <div id="error">
+  	<p>{0}</p>
+  </div>
+</div>
+</body>
+</html>

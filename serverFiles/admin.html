@@ -1,11 +1,98 @@
 <html>
 <head>
 	<title>CTF Admin Log-in</title>
+	<style>
+		body{
+			background-color: black;
+			margin:0;
+			height:100%;
+			width:100%;
+		}
 
+		#admin{
+			position: absolute;
+			background-color: #515151;
+			height:90%;
+			width:90%;
+			top:5%;
+			left:5%;
+			text-align: left;
+		}
+		p{
+			color: white;
+			margin-left: 5px;
+		}
+		h1{
+			color: white;
+			margin-left: 5px;
+		}
+		h3{
+			color: white;
+			margin-left: 5px;
+		}
+	</style>
+
+<script type="text/javascript">
+  function forgotPassword(){
+    var help = document.getElementById("error");
+    help.innerHTML = "<p class=\"mytext\">Forgot your password? Nothing to fix that right now....</p>"
+  }
+</script>
 </head>
 
 <body>
-	<h1>Administrator page coming soon</h1>
+	<div id="admin">
+	<h1>Admin Page</h1><hr>
+	<h3>Create Flag</h3>
+	<form method="post" action="admin">
+    <p>
+      <label for="name">Flag Name:</label>
+      <input type="text" name="name" id="name">
+    </p>
 
+    <p>
+      <label for="points">Points:</label>
+      <input type="text" name="points" id="points">
+    </p>
+    <p>
+      <label for="ipaddress">IPAddress of CTFCollector:</label>
+      <input type="text" name="ipaddress" id="ipaddress">
+    </p>
+    <p>
+      <label for="venemous">Venemous?</label>
+      <input type="text" name="venemous" id="venemous">
+    </p>
+    <p>
+      <label for="uuid">Just UUID?</label>
+      <input type="text" name="uuid" id="uuid">
+    </p>
+    <p>
+      <label for="obfuscate">Obfuscate:</label>
+      <input type="text" name="obfuscate" id="obfuscate">
+    </p>
+
+    <p class="login-submit">
+      <button type="submit" class="login-button">Create Flag</button>
+    </p>
+  </form>
+  <hr>
+  <h3>Create New User</h3>
+  <form method="post" action="admin">
+  	<p>
+      <label for="username">Username:</label>
+      <input type="text" name="username" id="username">
+    </p>
+    <p>
+      <label for="password">Password:</label>
+      <input type="password" name="password" id="password">
+    </p>
+    <p class="login-submit">
+      <button type="submit" class="login-button">Create User</button>
+    </p>
+</form>
+  <hr>
+  <div id="error">
+  </div>
+</div>
 </body>
 </html>
